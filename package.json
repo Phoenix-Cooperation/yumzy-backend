@@ -2,19 +2,21 @@
   "name": "yumzy-backend",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "nodemon ./app.js"
   },
   "dependencies": {
     "apollo-server-core": "^3.6.1",
     "apollo-server-express": "^3.6.1",
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "^4.16.4",
+    "firebase": "^9.6.3",
+    "firebase-admin": "^10.0.1",
     "graphql": "^16.2.0",
     "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
-    "morgan": "~1.9.1",
     "sequelize": "^6.13.0"
   },
   "devDependencies": {
