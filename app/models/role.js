@@ -8,7 +8,7 @@ const role = (sequelize, Sequelize) => {
             type: Sequelize.STRING
         }
     });
-
+    return Role;
 };
 
-export default role();
+export default role;

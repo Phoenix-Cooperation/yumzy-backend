@@ -10,7 +10,7 @@ const user= (sequelize, Sequelize) => {
             type: Sequelize.STRING
         }
     });
-
+    return User;
 };
 
-export default user();
+export default user;

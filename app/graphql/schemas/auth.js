@@ -18,7 +18,7 @@ const typeDefs = gql(`
         email: String!
         password: String
         status: String!
-        posts: [Post!]!
+
     }
     
     type Role {

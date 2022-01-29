@@ -1,4 +1,4 @@
-import {dbConfig} from "../config/db/dbConfig.js";
+import dbConfig from "../config/db/dbConfig.js";
 import {Sequelize} from "sequelize";
 
 const sequelize = new Sequelize(
@@ -24,15 +24,18 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-import {userModel} from "./user.js";
-import {roleModel} from "./role.js";
+import userModel from "./user.js";
+import roleModel from "./role.js";
 
-roleModel.belongsToMany(db.user, {
+db.user = userModel(sequelize,Sequelize);
+db.role = roleModel(sequelize,Sequelize);
+
+db.role.belongsToMany(db.user, {
     through: "user_roles",
     foreignKey: "roleId",
     otherKey: "userId"
 });
-userModel.belongsToMany(db.role, {
+db.user.belongsToMany(db.role, {
     through: "user_roles",
     foreignKey: "userId",
     otherKey: "roleId"

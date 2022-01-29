@@ -25,7 +25,17 @@ import typeDefs from "./app/graphql/schemas/auth.js"
 import authResolvers from "./app/graphql/resolvers/auth.js"
 import db from "./app/models/index.js"
 const app = express()
-app.use(bodyParser.json())
+app.use(express.urlencoded({extended: true}))
+
+const Role = db.role;
+
+// db.sequelize.sync();
+// force: true will drop the table if it already exists
+db.sequelize.sync({force: true}).then(() => {
+  console.log('Drop and Resync Database with { force: true }');
+  initial();
+});
+
 const server = new ApolloServer({
   context: async ({ req }) => {
     const auth = req.headers && req.headers.authorization || '';
@@ -44,7 +54,25 @@ const server = new ApolloServer({
   typeDefs,
   authResolvers
 })
+await server.start();
 server.applyMiddleware({ app, path: "/graphql" })
 app.listen(3030, () => {
   console.log("app is listening to port 3030")
 })
+
+function initial() {
+  Role.create({
+    id: 1,
+    name: "user"
+  });
+
+  Role.create({
+    id: 2,
+    name: "moderator"
+  });
+
+  Role.create({
+    id: 3,
+    name: "admin"
+  });
+}
