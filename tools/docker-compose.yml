@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+
+  postgresql:
+    container_name: yumzyfoods
+    image: postgres:11
+    restart: always
+    build:
+      context: ./docker/postgres
+      dockerfile: Dockerfile
+    volumes:
+      - ./tools/docker/postgres/initdb:/docker-entrypoint-initdb.d postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: yumzy_foods
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"

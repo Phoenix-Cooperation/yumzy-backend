@@ -21,23 +21,28 @@
 import express from "express"
 import bodyParser from "body-parser"
 import { ApolloServer } from "apollo-server-express"
-import typeDefs from "./typedef"
-import resolvers from "./resolver"
+import typeDefs from "./app/graphql/schemas/auth.js"
+import authResolvers from "./app/graphql/resolvers/auth.js"
+import db from "./app/models/index.js"
 const app = express()
 app.use(bodyParser.json())
 const server = new ApolloServer({
-  introspection: true,
-  typeDefs,
-  resolvers,
-  formatError: error => {
-    return error
-  },
-  context: ({ req, res }) => {
-    return {
-      req,
-      res,
+  context: async ({ req }) => {
+    const auth = req.headers && req.headers.authorization || '';
+    if (auth) {
+      const idToken = auth.split(" ")[1];
+
+      admin
+          .auth()
+          .verifyIdToken(idToken)
+          .then(function (decodedTOken) {
+            console.log(decodedTOken)
+          })
+          .catch(error => console.log(error))
     }
   },
+  typeDefs,
+  authResolvers
 })
 server.applyMiddleware({ app, path: "/graphql" })
 app.listen(3030, () => {

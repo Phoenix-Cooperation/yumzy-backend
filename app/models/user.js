@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+const user= (sequelize, Sequelize) => {
     const User = sequelize.define("users", {
         username: {
             type: Sequelize.STRING
@@ -11,5 +11,6 @@ module.exports = (sequelize, Sequelize) => {
         }
     });
 
-    return User;
 };
+
+export default user();
