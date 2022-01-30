@@ -2,7 +2,9 @@ import express from "express"
 import { ApolloServer } from "apollo-server-express"
 import typeDefs from "./app/graphql/schemas/auth.js"
 import authResolvers from "./app/graphql/resolvers/auth.js"
-import db from "./app/models/index.js"
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import initializeDB from "./app/middleware/initializeDB.js"
+import http from 'http';
 const app = express()
 app.use(express.urlencoded({extended: true}))
 
@@ -33,32 +35,9 @@ async function startApolloServer() {
 
   await server.start();
   server.applyMiddleware({ app });
-  await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve));
-  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+  await new Promise(resolve => httpServer.listen({ port: 3000 }, resolve));
+  console.log(`🚀 Server ready at http://localhost:3000${server.graphqlPath}`);
 }
+startApolloServer();
 
-const Role = db.role;
-
-db.sequelize.sync();
-// force: true will drop the table if it already exists
-db.sequelize.sync({force: true}).then(() => {
-  console.log('Drop and Resync Database with { force: true }');
-  initial();
-});
-
-function initial() {
-  Role.create({
-    id: 1,
-    name: "user"
-  });
-
-  Role.create({
-    id: 2,
-    name: "moderator"
-  });
-
-  Role.create({
-    id: 3,
-    name: "admin"
-  });
-}
+initializeDB();
