@@ -24,4 +24,7 @@ const fetchAllUsers = (callback) => {
         .catch(e => console.log(e));
 }
 
+
+
+
 export default authResolvers;

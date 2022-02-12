@@ -1,24 +1,11 @@
-import { ApolloServer, gql } from 'apollo-server-express';
+import {gql } from 'apollo-server-express';
 
 const typeDefs = gql(`
  
-  type Book {
-    title: String
-    author: String
-  }
-
-  
-  type Query {
-    books: [Book]
-  }
-  
   type User {
         _id: Int!
         name: String!
         email: String!
-        password: String
-        status: String!
-
     }
     
     type Role {
@@ -26,25 +13,24 @@ const typeDefs = gql(`
         name: String
         userId: Int!
     }
-
+  
     input UserInputData {
         email: String!
         name: String!
-        password: String!
     }
 
-    type RootQuery {
-        hello: String
+    type Query {
+        user: User!
     }
 
-    type RootMutation {
+    type Mutation {
         createUser(userInput: UserInputData): User!
     }
-
+    
     schema {
-        query: RootQuery
-        mutation: RootMutation
-    }
+    query: Query
+    mutation: Mutation
+}
 `);
 
 export default typeDefs;
