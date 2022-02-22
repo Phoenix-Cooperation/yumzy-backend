@@ -1,13 +1,17 @@
-const user= (sequelize, Sequelize) => {
-    const User = sequelize.define("users", {
+import sequelize from 'sequelize';
+import db from '../config/db/database.js';
+
+const UserContent = db.define("users", {
         username: {
-            type: Sequelize.STRING
+            type: sequelize.STRING
         },
         email: {
-            type: Sequelize.STRING
+            type: sequelize.STRING
         }
-    });
-    return User;
-};
+    },
+    {
+        freezeTableName: true,
+    }
+);
 
-export default user;
+export default UserContent;
