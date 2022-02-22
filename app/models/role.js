@@ -1,14 +1,14 @@
-const role = (sequelize, Sequelize) => {
-    const Role = sequelize.define("roles", {
-        id: {
-            type: Sequelize.INTEGER,
-            primaryKey: true
-        },
-        name: {
-            type: Sequelize.STRING
-        }
-    });
-    return Role;
-};
+import sequelize from 'sequelize';
+import db from '../config/db/database.js';
+
+const role = db.define("roles", {
+    id: {
+        type: sequelize.INTEGER,
+        primaryKey: true
+    },
+    name: {
+        type: sequelize.STRING
+    }
+});
 
 export default role;

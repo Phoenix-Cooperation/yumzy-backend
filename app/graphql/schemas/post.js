@@ -1,35 +1,29 @@
-import {gql } from 'apollo-server-express';
+import {gql} from 'apollo-server-express';
 
-const typeDefs = gql(`
+export default gql`
 
- type Post {
-     id: Int!
-     title: String!
-     content: String!
-     author: User!
-     createdAt: String
+    extend type Query {
+        getAllPosts: [Post!]
+        getSinglePost(postId: Int!): Post
+    }
+    extend type Mutation {
+        createPost(title: String!, content: String!): CreatePostResponse
+    }
 
- }
+    type Post {
+        id: Int!
+        title: String!
+        content: String!
+        author: User!
+        createdAt: String
 
- type Query {
-    getAllPosts: [Post!]
-    getSinglePost(postId: Int!): Post
-}
- type Mutation {
-     createPost(title: String!, content: String!): CreatePostResponse
- }
+    }
 
- type CreatePostResponse {
-    id: Int!
-    title: String!
-    content: String!
-    createdAt: String!
- }
- 
-schema {
-    query: Query
-    mutation: Mutation
-}
- `);
+    type CreatePostResponse {
+        id: Int!
+        title: String!
+        content: String!
+        createdAt: String!
+    }
+`;
 
-export default typeDefs;
