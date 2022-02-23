@@ -1,16 +1,24 @@
+import console from "consola";
 import db from "../models/index.js";
 
+const {error, success} = console;
 const Role = db.role;
 
 const initializeDB = async () => {
     try {
 // force: true will drop the table if it already exists
         db.sequelize.sync({force: true}).then(() => {
-            console.log('Drop and Resync Database with { force: true }');
+            success({
+                badge: true,
+                message: 'Drop and Resync Database with { force: true }',
+            });
             initial();
         });
     } catch (err) {
-        console.log(err);
+        error({
+            badge: true,
+            message: err.message
+        })
     }
 }
 
