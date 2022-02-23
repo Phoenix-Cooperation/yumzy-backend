@@ -1,16 +1,74 @@
 import {ApolloError} from "apollo-server-express";
+import bcryptjs from 'bcryptjs';
+const {hash, compare} = bcryptjs;
+
 
 export default {
     Query: {
-        getAllUsers: async () => {
-            return [
-                {
-                    _id: 2,
-                    name: "apple",
-                    email: "apple@gmail.com"
+        getAllUsers: async (_, {},
+                            {
+                                UserContent
+                            }) => {
+            try {
+
+                let result = await UserContent.findAll();
+
+                if (!result) {
+                    return passAllUsers(
+                        {
+                            status: false,
+                            code: 404,
+                            message: 'Can not find values',
+                            data: []
+                        }
+                    );
                 }
-            ];
-        }
+
+                return passAllUsers(
+                    {
+                        status: true,
+                        code: 200,
+                        message: 'success',
+                        data: result
+                    }
+                );
+            } catch (e) {
+                passAllUsers(
+                    {
+                        status: false,
+                        code: 403,
+                        message: e.message,
+                        data: []
+                    }
+                );
+            }
+        },
+        authenticateLoginUser: async (_,
+                                      {
+                                          username,
+                                          email
+                                      },
+                                      {
+                                          UserContent
+                                      }) => {
+            try {
+                let user = await UserContent.findOne({where: {username: username}});
+                if (!user) {
+                    return new ApolloError("User name not found", '400');
+                }
+
+                let isMatch = await compare(email, user.email);
+                if (!isMatch) {
+                    return new ApolloError("Invalid Email", '400');
+                }
+
+                user = user.dataValues;
+                return user;
+
+            } catch (e) {
+                throw new ApolloError(e.message, '403');
+            }
+        },
     },
 
     Mutation: {
@@ -33,7 +91,7 @@ export default {
 
             let {username, email} = userData;
             let user;
-            console.log(userData);
+
             try {
                 user = await UserContent.findOne({where: {username: username}});
                 if (user) {
@@ -67,7 +125,14 @@ export default {
 //         }
 //     }
 // }
-
+const passAllUsers = ({status, code, message, data}) => {
+    return {
+        status: status,
+        code: code,
+        message: message,
+        data: data
+    };
+}
 const fetchAllUsers = (callback) => {
     db.collection('users')
         .get()

@@ -2,21 +2,36 @@ import {gql} from 'apollo-server-express';
 
 export default gql`
     extend type Query {
-        getAllUsers: [User!]!
+        authenticateLoginUser(username: String!, email: String!): AuthUserOutput!
+        getAllUsers: AllUserOutput!
     }
     extend type Mutation {
         testMutation: String!
         createUser(userData: UserInputData!): User!
     }
     
+    type AuthUserOutput {
+        status: Boolean!
+        code: Int!
+        message: String!
+        data: User!
+    }
+
+    type AllUserOutput {
+        status: Boolean!
+        code: String!
+        message: String!
+        data: [User!]!
+    }
+    
     type User {
-        _id: Int!
+        id: Int!
         username: String!
         email: String!
     }
     
     type Role {
-        _id: Int!
+        id: Int!
         name: String
         userId: Int!
     }
