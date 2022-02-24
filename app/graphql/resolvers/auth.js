@@ -1,7 +1,7 @@
 import {ApolloError} from "apollo-server-express";
 import bcryptjs from 'bcryptjs';
 const {hash, compare} = bcryptjs;
-
+import {ErrorResponse} from "../../util/errorHandler/errorResponse.js";
 
 export default {
     Query: {
@@ -14,14 +14,7 @@ export default {
                 let result = await UserContent.findAll();
 
                 if (!result) {
-                    return returnResponse(
-                        {
-                            status: false,
-                            code: 404,
-                            message: 'Can not find values',
-                            data: []
-                        }
-                    );
+                    throw new ErrorResponse({message: 'Can not find values', code: 403});
                 }
 
                 return returnResponse(
@@ -33,14 +26,7 @@ export default {
                     }
                 );
             } catch (e) {
-                returnResponse(
-                    {
-                        status: false,
-                        code: 403,
-                        message: e.message,
-                        data: []
-                    }
-                );
+                throw new ErrorResponse({message: e.message, code: 403});
             }
         },
         authenticateLoginUser: async (_,
@@ -54,11 +40,11 @@ export default {
             try {
                 let user = await UserContent.findOne({where: {username: username}});
                 if (!user) {
-                    return new ApolloError("User name not found", '400');
+                    throw new ErrorResponse({message: 'User name not found', code: 403});
                 }
 
                 if (email !== user.email) {
-                    return new ApolloError("Invalid Email", '400');
+                    throw new ErrorResponse({message: 'Invalid Email', code: 403});
                 }
 
                 user = user.dataValues;
@@ -70,7 +56,7 @@ export default {
                 });
 
             } catch (e) {
-                throw new ApolloError(e.message, '403');
+                throw new ErrorResponse({message: e.message, code: 403});
             }
         },
     },
@@ -99,12 +85,12 @@ export default {
             try {
                 user = await UserContent.findOne({where: {username: username}});
                 if (user) {
-                    return new ApolloError("User name is already taken", '400');
+                    throw new ErrorResponse({message: "User name is already taken", code: 403});
                 }
 
                 user = await UserContent.findOne({where: {email: email}});
                 if (user) {
-                    return new ApolloError("Email is already taken", '400');
+                    throw new ErrorResponse({message: "Email is already taken", code: 403});
                 }
                 user = new UserContent(userData);
                 let result = await user.save();
@@ -113,7 +99,7 @@ export default {
                 return result;
 
             } catch (e) {
-                throw new ApolloError(e.message, '403');
+                throw new ErrorResponse({message: e.message, code: 403});
             }
         }
     }
