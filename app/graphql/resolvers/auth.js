@@ -14,7 +14,7 @@ export default {
                 let result = await UserContent.findAll();
 
                 if (!result) {
-                    return passAllUsers(
+                    return returnResponse(
                         {
                             status: false,
                             code: 404,
@@ -24,7 +24,7 @@ export default {
                     );
                 }
 
-                return passAllUsers(
+                return returnResponse(
                     {
                         status: true,
                         code: 200,
@@ -33,7 +33,7 @@ export default {
                     }
                 );
             } catch (e) {
-                passAllUsers(
+                returnResponse(
                     {
                         status: false,
                         code: 403,
@@ -57,13 +57,17 @@ export default {
                     return new ApolloError("User name not found", '400');
                 }
 
-                let isMatch = await compare(email, user.email);
-                if (!isMatch) {
+                if (email !== user.email) {
                     return new ApolloError("Invalid Email", '400');
                 }
 
                 user = user.dataValues;
-                return user;
+                return returnResponse({
+                    status: true,
+                    code: 200,
+                    message: "success",
+                    data: user
+                });
 
             } catch (e) {
                 throw new ApolloError(e.message, '403');
@@ -114,35 +118,12 @@ export default {
         }
     }
 }
-// const authResolvers = {
-//     Query: {
-//         users: () => {
-//             return new Promise((resolve, reject) => {
-//                 fetchAllUsers((data) => {
-//                     resolve(data);
-//                 });
-//             });
-//         }
-//     }
-// }
-const passAllUsers = ({status, code, message, data}) => {
+
+const returnResponse = ({status, code, message, data}) => {
     return {
         status: status,
         code: code,
         message: message,
         data: data
     };
-}
-const fetchAllUsers = (callback) => {
-    db.collection('users')
-        .get()
-        .then((item) => {
-            const items = [];
-            item.docs.forEach(item => {
-                console.log('Adding...')
-                items.push(item.data())
-            });
-            return callback(items);
-        })
-        .catch(e => console.log(e));
 }
