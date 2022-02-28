@@ -28,6 +28,7 @@ export default gql`
         id: Int!
         username: String!
         email: String!
+        user_id: String!
     }
     
     type Role {
@@ -39,5 +40,6 @@ export default gql`
     input UserInputData {
         email: String!
         username: String!
+        user_id: String!
     }
 `;
