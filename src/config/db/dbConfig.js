@@ -1,7 +1,7 @@
 const dbConfig = {
     HOST: "localhost",
     USER: "postgres",
-    PASSWORD: "password",
+    PASSWORD: "postgres",
     DB: "yumzy_foods",
     dialect: "postgres",
     pool: {
