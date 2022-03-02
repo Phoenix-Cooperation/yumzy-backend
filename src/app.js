@@ -9,6 +9,7 @@ import admin from "./config/firebase/firebase-config.js";
 import {PORT, IN_PROD} from "./config/constant/index.js";
 import * as AppModels from "./models/mainModels.js";
 import { createStore } from "./models/index.js";
+import UserAPI from "./datasources/user.js";
 
 const {error, success} = console;
 
@@ -19,17 +20,16 @@ app.use(express.urlencoded({extended: true}));
 // const store = createStore();
 
 
-
+let store = createStore();
 async function startApolloServer() {
     try {
         console.log("app starting.......")
         const app = express();
         const httpServer = http.createServer(app);
-        const store = createStore();
+        // const store = createStore();
         const server = new ApolloServer({
           context: async ({req}) => {
               let user;
-              // let store = createStore();
               const auth = req.headers && req.headers.authorization || '';
               // console.log(auth)
               if (auth) {
@@ -51,9 +51,7 @@ async function startApolloServer() {
                             throw new AuthenticationError(err.message);
                         })
 
-                } else {
-                    throw new AuthenticationError("Token in undefined");
-                }
+                } 
               }
 
               return { user };
@@ -62,7 +60,7 @@ async function startApolloServer() {
             resolvers,
             dataSources: () => {
               return {
-                sqlDataSource: createStore(),
+                UserAPI: new UserAPI({ store }),
               }
             }
         });
