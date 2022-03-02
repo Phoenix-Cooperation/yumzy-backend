@@ -7,7 +7,7 @@ export default gql`
     }
     extend type Mutation {
         testMutation: String!
-        createUser(userData: UserInputData!): User!
+        createUser(username: String!, email: String!, user_id: String!): User!
     }
     
     type AuthUserOutput {

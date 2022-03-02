@@ -7,6 +7,7 @@
     "start": "nodemon src/app.js"
   },
   "dependencies": {
+    "apollo-datasource": "^3.3.1",
     "apollo-server-core": "^3.6.1",
     "apollo-server-express": "^3.6.3",
     "bcryptjs": "^2.4.3",
