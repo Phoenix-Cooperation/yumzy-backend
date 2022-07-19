@@ -6,6 +6,7 @@ export default gql`
         getAllPosts: [Post!]
         getSinglePost(postId: Int!): Post
     }
+    
     extend type Mutation {
         createPost(title: String!, content: String!): CreatePostResponse
     }
@@ -13,10 +14,26 @@ export default gql`
     type Post {
         id: Int!
         title: String!
-        content: String!
-        author: User!
-        createdAt: String
+        images: [String]
+        tags: [String]
+    }
 
+    type RecipePost {
+        id: Int!
+        title: String!
+        tags: [String]
+        description: String!
+        ingredients: [String!]
+        images: [String!]
+        Method: String
+        Time: String!
+    }
+
+    type TipsPost {
+        id: Int!
+        title: String!
+        tags: [String]
+        images: [String]
     }
 
     type CreatePostResponse {
