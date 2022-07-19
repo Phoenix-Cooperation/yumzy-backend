@@ -14,7 +14,7 @@ import db from '../config/db/database.js';
 //     }
 // );
 
-const User = {
+const UserModel = {
     username: {
         type: sequelize.STRING
     },
@@ -26,4 +26,4 @@ const User = {
     }
 }
 
-export default User;
+export default UserModel;

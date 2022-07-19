@@ -2,9 +2,9 @@ import { Sequelize } from 'sequelize';
 import console from 'consola';
 
 import dbConfig from '../config/db/dbConfig.js';
-import User from "./user.js";
-import Role from "./role.js";
-import { BasePost, RecipePost } from "./post.js";
+import UserModel from "./user.js";
+import RoleModel from "./role.js";
+import { RecipePostModel } from "./post.js";
 
 const { success, error } = console;
 
@@ -46,17 +46,17 @@ export const createStore = () => {
         }
     )
 
-    const User = db.define('user', User, { freezeTableName: true })
-    const Role = db.define('role', Role, )
+    const User = db.define('user', UserModel, { freezeTableName: true })
+    const Role = db.define('role', RoleModel, )
 
-    UserModel.belongsToMany(RoleModel, { through: "user_roles" })
-    RoleModel.belongsToMany(UserModel, { through: "user_roles" })
+    User.belongsToMany(Role, { through: "user_roles" })
+    Role.belongsToMany(User, { through: "user_roles" })
 
     
-    const RecipePostModel = db.define('recipe_post', RecipePost)
+    const RecipePost = db.define('recipe_post', RecipePostModel)
 
-    UserModel.hasMany(RecipePostModel)
-    RecipePostModel.belongsTo(UserModel)
+    User.hasMany(RecipePost)
+    RecipePost.belongsTo(User)
 
     
     try {
@@ -68,7 +68,7 @@ export const createStore = () => {
 
 
     // const ROLES = ["user", "admin", "moderator"];
-    return { db, UserModel, RoleModel }
+    return { db, User, Role }
 }
 
     
