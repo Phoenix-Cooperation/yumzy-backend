@@ -1,6 +1,6 @@
 import sequelize, { DataTypes} from "sequelize";
 
-export const RecipePost = {
+export const RecipePostModel = {
     title: {
         type: sequelize.STRING
     },

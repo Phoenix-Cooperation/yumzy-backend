@@ -15,7 +15,7 @@ class UserAPI extends DataSource {
     async createOrFindUser(userData) {
         const { user_id, email, username } = userData;
         try {
-            const user = await this.store.UserModel.findOne({ where: {
+            const user = await this.store.User.findOne({ where: {
                 user_id : user_id, 
                 email: email, 
                 username: username,
@@ -26,7 +26,7 @@ class UserAPI extends DataSource {
                 return user; 
             }
             else {
-                const user = new this.store.UserModel(userData)
+                const user = new this.store.User(userData)
                 const userVal = await user.save();
                 console.log(userVal);
                 success({ badge: true,  message: "User Created"})
@@ -42,7 +42,7 @@ class UserAPI extends DataSource {
     async getAllUsers() {
         // console.log(this.store)
         try {
-            const users = await this.store.UserModel.findAll()
+            const users = await this.store.User.findAll()
             console.log(users);
             const userList = users.map(user => user.dataValues)
             console.log(userList)
