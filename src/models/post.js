@@ -1,7 +1,7 @@
 import sequelize, { DataTypes} from "sequelize";
 
 
-export const RecipePostModel = {
+export const RecipeModel = {
     title: {
         type: sequelize.STRING
     },
@@ -26,3 +26,17 @@ export const RecipePostModel = {
 
 }
 
+export const TipsPostModel = {
+    title: {
+        type: sequelize.STRING
+    },
+    tips: {
+        type: sequelize.STRING
+    },
+    images: {
+        type: DataTypes.ARRAY(sequelize.STRING)
+    },
+    tags: {
+        type: DataTypes.ARRAY(sequelize.STRING)
+    }
+}
