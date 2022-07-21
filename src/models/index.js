@@ -4,26 +4,9 @@ import console from 'consola';
 import dbConfig from '../config/db/dbConfig.js';
 import UserModel from "./user.js";
 import RoleModel from "./role.js";
-import { RecipeModel } from "./post.js";
+import { RecipeModel, TipsModel, PostModel } from "./post.js";
 
 const { success, error } = console;
-
-// async function initial() {
-//     Role.create({
-//         id: 1,
-//         name: "user"
-//     }).then();
-
-//     Role.create({
-//         id: 2,
-//         name: "moderator"
-//     }).then();
-
-//     Role.create({
-//         id: 3,
-//         name: "admin"
-//     }).then();
-// }
 
 export const createStore = () => {
 
@@ -53,12 +36,21 @@ export const createStore = () => {
     Role.belongsToMany(User, { through: "user_roles" })
 
     
-    const Recipe = db.define('recipe_post', RecipeModel)
+    const Recipe = db.define('recipe', RecipeModel)
 
     User.hasMany(Recipe)
     Recipe.belongsTo(User)
-
     
+    const Post = db.define('post', PostModel)
+    
+    User.hasMany(Post)
+    Post.belongsTo(User)
+
+    const Tips = db.define('tips', TipsModel)
+
+    User.hasMany(Tips)
+    Tips.belongsTo(User)
+
     try {
         // db.sync({ force : true })
         db.sync()
@@ -69,7 +61,7 @@ export const createStore = () => {
 
 
     // const ROLES = ["user", "admin", "moderator"];
-    return { db, User, Role, Recipe}
+    return { db, User, Role, Recipe, Tips, Post }
 }
 
     
