@@ -60,15 +60,16 @@ export const createStore = () => {
 
     
     try {
+        // db.sync({ force : true })
         db.sync()
         success({ badge: true, message: "DB Sync successfull" })
-    } catch (error) {
+    } catch (err) {
         error({ badge: true, message: "DB Sync failed"})
     }
 
 
     // const ROLES = ["user", "admin", "moderator"];
-    return { db, User, Role }
+    return { db, User, Role, RecipePost}
 }
 
     

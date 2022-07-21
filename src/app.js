@@ -10,6 +10,7 @@ import {PORT, IN_PROD} from "./config/constant/index.js";
 import * as AppModels from "./models/mainModels.js";
 import { createStore } from "./models/index.js";
 import UserAPI from "./datasources/user.js";
+import PostAPI from "./datasources/post.js";
 
 const {error, success} = console;
 
@@ -31,20 +32,20 @@ async function startApolloServer() {
           context: async ({req}) => {
               let user;
               const auth = req.headers && req.headers.authorization || '';
-              // console.log(auth)
+              console.log(auth)
               if (auth) {
                 const idToken = auth.split(" ")[1];
                 if (idToken) {
-                    admin
+                    await admin
                         .auth()
                         .verifyIdToken(idToken)
                         .then(function (decodedToken) {
                           console.log(decodedToken)
                           success({ badge: true, message: `decodedToken` });
                           const { name, user_id } = decodedToken
-                          // const user = { name, user_id };
-                          console.log(user, "user")
                           user = { name, user_id };
+                          console.log(user, "user")
+                          
                         })
                         .catch((err) => {
                             error({badge: true, message: err })
@@ -53,7 +54,7 @@ async function startApolloServer() {
 
                 } 
               }
-
+              console.log(user, "after")
               return { user };
             },
             typeDefs,
@@ -61,6 +62,7 @@ async function startApolloServer() {
             dataSources: () => {
               return {
                 UserAPI: new UserAPI({ store }),
+                PostAPI: new PostAPI({ store })
               }
             }
         });
