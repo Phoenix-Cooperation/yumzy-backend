@@ -4,7 +4,7 @@ import console from 'consola';
 import dbConfig from '../config/db/dbConfig.js';
 import UserModel from "./user.js";
 import RoleModel from "./role.js";
-import { RecipePostModel } from "./post.js";
+import { RecipeModel } from "./post.js";
 
 const { success, error } = console;
 
@@ -53,10 +53,10 @@ export const createStore = () => {
     Role.belongsToMany(User, { through: "user_roles" })
 
     
-    const RecipePost = db.define('recipe_post', RecipePostModel)
+    const Recipe = db.define('recipe_post', RecipeModel)
 
-    User.hasMany(RecipePost)
-    RecipePost.belongsTo(User)
+    User.hasMany(Recipe)
+    Recipe.belongsTo(User)
 
     
     try {
@@ -69,7 +69,7 @@ export const createStore = () => {
 
 
     // const ROLES = ["user", "admin", "moderator"];
-    return { db, User, Role, RecipePost}
+    return { db, User, Role, Recipe}
 }
 
     

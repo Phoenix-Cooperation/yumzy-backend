@@ -30,7 +30,7 @@ class PostAPI extends DataSource {
     console.log("post api user", user);
 
     try {
-      const recipePost = new this.store.RecipePost(recipePostData);
+      const recipePost = new this.store.Recipe(recipePostData);
       recipePost.userId = user.id
       const recipePostVal = await recipePost.save();
       console.log("post api recipe", recipePostVal.dataValues)
