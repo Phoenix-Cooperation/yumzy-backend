@@ -40,3 +40,19 @@ export const TipsPostModel = {
         type: DataTypes.ARRAY(sequelize.STRING)
     }
 }
+
+
+export const PostModel = {
+    title: {
+        type: sequelize.STRING
+    },
+    description: {
+        type: sequelize.STRING
+    },
+    images: {
+        type: DataTypes.ARRAY(sequelize.STRING)
+    },
+    tags: {
+        type: DataTypes.ARRAY(sequelize.STRING)
+    }
+}
