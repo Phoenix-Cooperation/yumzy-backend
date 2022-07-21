@@ -9,6 +9,7 @@ export default gql`
     
     extend type Mutation {
         createPost(title: String!, content: String!): CreatePostResponse
+        createRecipe(recipeInput: RecipeInput!): Recipe
     }
 
     type Post {
@@ -18,29 +19,40 @@ export default gql`
         tags: [String]
     }
 
-    type RecipePost {
+    type Recipe {
         id: Int!
         title: String!
         tags: [String]
         description: String!
         ingredients: [String!]
         images: [String!]
-        Method: String
-        Time: String!
+        method: String!
+        time: String!
     }
 
-    type TipsPost {
+    type Tips {
         id: Int!
         title: String!
         tags: [String]
         images: [String]
     }
 
+    
     type CreatePostResponse {
         id: Int!
         title: String!
         content: String!
         createdAt: String!
+    }
+
+    input RecipeInput {
+        title: String!
+        description: String!
+        ingredients: [String!]
+        images: [String!]
+        method: String!
+        time: String!
+        tags: [String]
     }
 `;
 

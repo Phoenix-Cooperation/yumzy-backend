@@ -1,5 +1,6 @@
 import sequelize, { DataTypes} from "sequelize";
 
+
 export const RecipePostModel = {
     title: {
         type: sequelize.STRING
@@ -24,3 +25,4 @@ export const RecipePostModel = {
     }
 
 }
+
