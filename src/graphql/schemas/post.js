@@ -1,4 +1,4 @@
-import {gql} from 'apollo-server-express';
+import { gql } from 'apollo-server-express';
 
 export default gql`
 
@@ -19,30 +19,16 @@ export default gql`
         tags: [String]
     }
 
+    
     type Recipe {
         id: Int!
         title: String!
-        tags: [String]
         description: String!
         ingredients: [String!]
         images: [String!]
         method: String!
         time: String!
-    }
-
-    type Tips {
-        id: Int!
-        title: String!
         tags: [String]
-        images: [String]
-    }
-
-    
-    type CreatePostResponse {
-        id: Int!
-        title: String!
-        content: String!
-        createdAt: String!
     }
 
     input RecipeInput {
@@ -54,5 +40,44 @@ export default gql`
         time: String!
         tags: [String]
     }
+
+    type Tips {
+        id: Int!
+        title: String!
+        tips: String!
+        images: [String]
+        tags: [String]
+    }
+
+    type TipsInput {
+        id: Int!
+        title: String!
+        tips: String!
+        images: [String]
+        tags: [String]
+    }
+    
+    type Post{
+        id: Int!
+        title: String!
+        description: String!
+        images: [String]
+        tags: [String]
+    }
+
+    type PostInput {
+        title: String!
+        description: String!
+        images: [String]
+        tags: [String]
+    }
+    type CreatePostResponse {
+        id: Int!
+        title: String!
+        content: String!
+        createdAt: String!
+    }
+
+    
 `;
 
