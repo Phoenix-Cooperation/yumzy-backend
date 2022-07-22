@@ -26,7 +26,7 @@ export const RecipeModel = {
 
 }
 
-export const TipsPostModel = {
+export const TipsModel = {
     title: {
         type: sequelize.STRING
     },
