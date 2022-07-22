@@ -2,21 +2,11 @@ import { gql } from 'apollo-server-express';
 
 export default gql`
 
-    extend type Query {
-        getAllPosts: [Post!]
-        getSinglePost(postId: Int!): Post
-    }
     
     extend type Mutation {
-        createPost(title: String!, content: String!): CreatePostResponse
         createRecipe(recipeInput: RecipeInput!): Recipe
-    }
-
-    type Post {
-        id: Int!
-        title: String!
-        images: [String]
-        tags: [String]
+        createTips(tipsInput: TipsInput!): Tips
+        createPost(postInput: PostInput!): Post
     }
 
     
@@ -49,7 +39,7 @@ export default gql`
         tags: [String]
     }
 
-    type TipsInput {
+    input TipsInput {
         id: Int!
         title: String!
         tips: String!
@@ -65,7 +55,7 @@ export default gql`
         tags: [String]
     }
 
-    type PostInput {
+    input PostInput {
         title: String!
         description: String!
         images: [String]
