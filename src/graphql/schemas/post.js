@@ -40,7 +40,6 @@ export default gql`
     }
 
     input TipsInput {
-        id: Int!
         title: String!
         tips: String!
         images: [String]
