@@ -13,7 +13,7 @@ class PostAPI extends DataSource {
     this.context = config.context;
   }
 
-  async createRecipePost(recipePostData) {
+  async createRecipe(recipePostData) {
 
     console.log("post", this.context.user)
     if (!this.context.user) {
@@ -43,6 +43,58 @@ class PostAPI extends DataSource {
       error({ badge: true, message: err.message })
       return null;
     }
+  }
+
+  async createTips(tipsData) {
+    if (!this.context.user) {
+      return null;
+    }
+
+    const { user_id } = this.context.user;
+
+    const { dataValues: user } = await this.store.User.findOne({
+      where: {
+        user_id
+      }
+    })
+
+    try {
+      const tips = new this.store.Tips(tipsData)
+      tips.userId = user.id
+      const tipsVal = await tips.save()
+
+      success({ badge: true,  message: "Tips Created!"})
+      return tipsVal.dataValues;
+    } catch (error) {
+      
+    }
+
+  }
+
+  async createPost(postData) {
+    if (!this.context.user) {
+      return null;
+    }
+
+    const { user_id } = this.context.user;
+
+    const { dataValues: user } = await this.store.User.findOne({
+      where: {
+        user_id
+      }
+    })
+
+    try {
+      const post = new this.store.Post(postData)
+      post.userId = user.id
+      const postVal = await post.save()
+
+      success({ badge: true,  message: "Tips Created!"})
+      return postVal.dataValues;
+    } catch (err) {
+      error({ badge: true, message: err.message })
+    }
+
   }
 
 }
