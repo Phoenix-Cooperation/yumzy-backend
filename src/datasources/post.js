@@ -35,13 +35,13 @@ class PostAPI extends DataSource {
       const recipePostVal = await recipePost.save();
       console.log("post api recipe", recipePostVal.dataValues)
       
-      success({ badge: true, message: "Recipe Post Created!" })
+      success({ badge: true, message: "Recipe Created!" })
       return recipePostVal.dataValues;
 
     }
     catch (err) {
       error({ badge: true, message: err.message })
-      return null;
+      throw new Error(err.message)
     }
   }
 
@@ -66,7 +66,8 @@ class PostAPI extends DataSource {
       success({ badge: true,  message: "Tips Created!"})
       return tipsVal.dataValues;
     } catch (error) {
-      
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
     }
 
   }
@@ -89,10 +90,11 @@ class PostAPI extends DataSource {
       post.userId = user.id
       const postVal = await post.save()
 
-      success({ badge: true,  message: "Tips Created!"})
+      success({ badge: true,  message: "Post Created!"})
       return postVal.dataValues;
     } catch (err) {
       error({ badge: true, message: err.message })
+      throw new Error(err.message)
     }
 
   }
