@@ -7,7 +7,7 @@ export default {
       try {
         const recipe = await dataSources.PostAPI.createRecipe(recipeInput)
       } catch (error) {
-        throw new ErrorResponse({ message: 'Cannot create recipe'})
+        throw new ErrorResponse({ message: `Cannot create recipe: ${error.message}`})
       }
 
       return recipe;
@@ -16,7 +16,7 @@ export default {
       try {
         const tips = await dataSources.PostAPI.createTips(tipsInput)
       } catch (error) {
-        throw new ErrorResponse({ message: 'Cannot create tips'})
+        throw new ErrorResponse({ message: `Cannot create tips: ${error.message}`})
       }
       return tips;
     },
@@ -26,7 +26,7 @@ export default {
         const post = await dataSources.PostAPI.createPost(postInput)
         
       } catch (error) {
-        throw new ErrorResponse({ message: 'Cannot create post'})
+        throw new ErrorResponse({ message: `Cannot create post: ${error.message}`})
       }
       return post;
     }

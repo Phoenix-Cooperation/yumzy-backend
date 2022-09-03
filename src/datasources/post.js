@@ -17,7 +17,8 @@ class PostAPI extends DataSource {
 
     console.log("post", this.context.user)
     if (!this.context.user) {
-      return null;
+      error({badge: true, message: 'User not logged in'})
+      throw new Error('Error! User is not logged in');
     }
 
     const { user_id }= this.context.user;
@@ -47,7 +48,8 @@ class PostAPI extends DataSource {
 
   async createTips(tipsData) {
     if (!this.context.user) {
-      return null;
+      error({badge: true, message: 'User not logged in'})
+      throw new Error('Error! User is not logged in');
     }
 
     const { user_id } = this.context.user;
@@ -74,7 +76,8 @@ class PostAPI extends DataSource {
 
   async createPost(postData) {
     if (!this.context.user) {
-      return null;
+      error({badge: true, message: 'User not logged in'})
+      throw new Error('Error! User is not logged in');
     }
 
     const { user_id } = this.context.user;
