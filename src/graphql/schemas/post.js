@@ -1,15 +1,15 @@
-import { gql } from 'apollo-server-express';
+import {gql} from 'apollo-server-express';
 
 export default gql`
 
-    
+
     extend type Mutation {
         createRecipe(recipeInput: RecipeInput!): Recipe
         createTips(tipsInput: TipsInput!): Tips
         createPost(postInput: PostInput!): Post
     }
 
-    
+
     type Recipe {
         id: Int!
         title: String!
@@ -45,7 +45,7 @@ export default gql`
         images: [String]
         tags: [String]
     }
-    
+
     type Post{
         id: Int!
         title: String!
@@ -66,7 +66,5 @@ export default gql`
         content: String!
         createdAt: String!
     }
-
-    
 `;
 
