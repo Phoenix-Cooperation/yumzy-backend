@@ -1,12 +1,40 @@
-import { Sequelize } from 'sequelize';
+import {Sequelize} from 'sequelize';
 import console from 'consola';
 
 import dbConfig from '../config/db/dbConfig.js';
 import UserModel from "./user.js";
 import RoleModel from "./role.js";
-import { RecipeModel, TipsModel, PostModel } from "./post.js";
+import {RecipeModel, TipsModel, PostModel} from "./post.js";
 
-const { success, error } = console;
+const {success, error} = console;
+
+export const paginateResults = ({
+                                      after: cursor,
+                                      pageSize = 20,
+                                      results,
+                                      // can pass in a function to calculate an item's cursor
+                                      getCursor = () => null,
+                                  }) => {
+    if (pageSize < 1) return [];
+
+    if (!cursor) return results.slice(0, pageSize);
+    const cursorIndex = results.findIndex(item => {
+        // if an item has a `cursor` on it, use that, otherwise try to generate one
+        let itemCursor = item.cursor ? item.cursor : getCursor(item);
+
+        // if there's still not a cursor, return false by default
+        return itemCursor ? cursor === itemCursor : false;
+    });
+
+    return cursorIndex >= 0
+        ? cursorIndex === results.length - 1 // don't let us overflow
+            ? []
+            : results.slice(
+                cursorIndex + 1,
+                Math.min(results.length, cursorIndex + 1 + pageSize),
+            )
+        : results.slice(0, pageSize);
+};
 
 export const createStore = () => {
 
@@ -18,7 +46,7 @@ export const createStore = () => {
             host: dbConfig.HOST,
             dialect: dbConfig.dialect,
             operatorsAliases: false,
-    
+
             pool: {
                 max: dbConfig.pool.max,
                 min: dbConfig.pool.min,
@@ -29,20 +57,20 @@ export const createStore = () => {
         }
     )
 
-    const User = db.define('user', UserModel, { freezeTableName: true })
-    const Role = db.define('role', RoleModel, )
+    const User = db.define('user', UserModel, {freezeTableName: true})
+    const Role = db.define('role', RoleModel,)
 
-    User.belongsToMany(Role, { through: "user_roles" })
-    Role.belongsToMany(User, { through: "user_roles" })
+    User.belongsToMany(Role, {through: "user_roles"})
+    Role.belongsToMany(User, {through: "user_roles"})
 
-    
+
     const Recipe = db.define('recipe', RecipeModel)
 
     User.hasMany(Recipe)
     Recipe.belongsTo(User)
-    
+
     const Post = db.define('post', PostModel)
-    
+
     User.hasMany(Post)
     Post.belongsTo(User)
 
@@ -54,14 +82,14 @@ export const createStore = () => {
     try {
         // db.sync({ force : true })
         db.sync()
-        success({ badge: true, message: "DB Sync successfull" })
+        success({badge: true, message: "DB Sync successfull"})
     } catch (err) {
-        error({ badge: true, message: "DB Sync failed"})
+        error({badge: true, message: "DB Sync failed"})
     }
 
 
     // const ROLES = ["user", "admin", "moderator"];
-    return { db, User, Role, Recipe, Tips, Post }
+    return {db, User, Role, Recipe, Tips, Post}
 }
 
     
