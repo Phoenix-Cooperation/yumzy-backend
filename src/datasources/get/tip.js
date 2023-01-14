@@ -34,7 +34,7 @@ class TipAPI extends DataSource {
         }
 
         const tips = await this.store.Tips.findAll();
-        return tips && tips.length > 0;
+        return tips;
     }
 }
 

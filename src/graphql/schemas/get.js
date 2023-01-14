@@ -10,8 +10,8 @@ export default gql`
         status: Boolean!
         code: Int!
         message: String!
-        data: [TipsGet!]!
-        cursor: String!
+        data: [TipsGet!]
+        cursor: String
         hasMore: Boolean!
     }
 
@@ -19,8 +19,8 @@ export default gql`
         status: Boolean!
         code: Int!
         message: String!
-        data: [RecipeGet!]!
-        cursor: String!
+        data: [RecipeGet!]
+        cursor: String
         hasMore: Boolean!
     }
 
