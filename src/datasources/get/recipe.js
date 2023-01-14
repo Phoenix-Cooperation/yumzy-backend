@@ -33,8 +33,9 @@ class RecipeAPI extends DataSource {
             throw new Error('getAllRecipe{} -> Unauthorized user');
         }
 
-        const recipe = await this.store.Recipe.findAll();
-        return recipe && recipe.length > 0;
+        const recipes = await this.store.Recipe.findAll();
+
+        return recipes;
     }
 }
 

@@ -1,5 +1,5 @@
 import {paginateResults} from "../../models/index.js";
-import {TipAPI} from "../../datasources/get";
+import {TipAPI} from "../../datasources/get/index.js";
 
 export default {
     Query: {
@@ -9,7 +9,7 @@ export default {
          * @return returnResponse get all tips wih pagination
          * */
         getAllTips: async (_, {pageSize = 20, after}, {dataSources}) => {
-            const allTips = dataSources.getTipAPI.tipAPI.getAllTip();
+            const allTips = await dataSources.TipAPI.getAllTip();
             allTips.reverse();
 
             const paginatedAllTips = paginateResults({
@@ -27,7 +27,6 @@ export default {
                     ? paginatedAllTips[paginatedAllTips.length - 1].cursor !==
                     paginatedAllTips[paginatedAllTips.length - 1].cursor
                     : false,
-
             })
         },
 
@@ -37,7 +36,9 @@ export default {
          * @return returnResponse get all Recipe wih pagination
          * */
         getAllRecipes: async (_, {pageSize = 20, after}, {dataSources}) => {
-            const allRecipe = dataSources.getTipAPI.receiptAPI.getAllRecipe();
+            console.log("dataSources", dataSources)
+            const allRecipe = await  dataSources.RecipeAPI.getAllRecipe();
+            console.log(allRecipe)
             allRecipe.reverse();
 
             const paginatedAllRecipe = paginateResults({
