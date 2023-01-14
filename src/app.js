@@ -12,6 +12,7 @@ import {createStore} from "./models/index.js";
 import UserAPI from "./datasources/user.js";
 import PostAPI from "./datasources/post.js";
 import RecipeAPI from './datasources/get/recipe.js';
+import TipAPI from './datasources/get/tip.js';
 import GetTipAPI from "./datasources/get/get.js";
 
 const {error, success} = console;
@@ -28,8 +29,8 @@ let store = createStore();
 const dataSources = () => ({
     UserAPI: new UserAPI({store}),
     PostAPI: new PostAPI({store}),
-    // getTipAPI: new GetTipAPI({store}),
-    RecipeAPI: new RecipeAPI({store})
+    RecipeAPI: new RecipeAPI({store}),
+    TipAPI: new TipAPI({store}),
 });
 
 async function startApolloServer() {
@@ -42,7 +43,7 @@ async function startApolloServer() {
             context: async ({req}) => {
                 let user;
                 const auth = req.headers && req.headers.authorization || '';
-                console.log(auth)
+                // console.log(auth)
                 if (auth) {
                     const idToken = auth.split(" ")[1];
                     if (idToken) {
@@ -51,10 +52,10 @@ async function startApolloServer() {
                             .verifyIdToken(idToken)
                             .then(function (decodedToken) {
                                 console.log(decodedToken)
-                                success({badge: true, message: `decodedToken`});
+                                // success({badge: true, message: `decodedToken`});
                                 const {name, user_id} = decodedToken
                                 user = {name, user_id};
-                                console.log(user, "user")
+                                // console.log(user, "user")
 
                             })
                             .catch((err) => {

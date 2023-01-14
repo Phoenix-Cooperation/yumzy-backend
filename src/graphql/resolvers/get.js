@@ -9,7 +9,7 @@ export default {
          * @return returnResponse get all tips wih pagination
          * */
         getAllTips: async (_, {pageSize = 20, after}, {dataSources}) => {
-            const allTips = dataSources.getTipAPI.tipAPI.getAllTip();
+            const allTips = await dataSources.TipAPI.getAllTip();
             allTips.reverse();
 
             const paginatedAllTips = paginateResults({
@@ -37,7 +37,8 @@ export default {
          * */
         getAllRecipes: async (_, {pageSize = 20, after}, {dataSources}) => {
             console.log("dataSources", dataSources)
-            const allRecipe = dataSources.ReceipeAPI.getAllRecipe();
+            const allRecipe = await  dataSources.RecipeAPI.getAllRecipe();
+            console.log(allRecipe)
             allRecipe.reverse();
 
             const paginatedAllRecipe = paginateResults({
