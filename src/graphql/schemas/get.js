@@ -3,7 +3,7 @@ import {gql} from 'apollo-server-express';
 export default gql`
     extend type Query {
         getAllTips(pageSize: Int!, after: String!): TipsConnection!
-        getAllRecipes(pageSize: Int!, after: String!): RecipeConnection!
+        getAllRecipes(pageSize: Int!, after: String): RecipeConnection!
     }
 
     type TipsConnection {

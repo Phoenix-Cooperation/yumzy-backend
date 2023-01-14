@@ -11,6 +11,7 @@ import * as AppModels from "./models/mainModels.js";
 import {createStore} from "./models/index.js";
 import UserAPI from "./datasources/user.js";
 import PostAPI from "./datasources/post.js";
+import RecipeAPI from './datasources/get/recipe.js';
 import GetTipAPI from "./datasources/get/get.js";
 
 const {error, success} = console;
@@ -27,7 +28,8 @@ let store = createStore();
 const dataSources = () => ({
     UserAPI: new UserAPI({store}),
     PostAPI: new PostAPI({store}),
-    getTipAPI: new GetTipAPI({store}),
+    // getTipAPI: new GetTipAPI({store}),
+    RecipeAPI: new RecipeAPI({store})
 });
 
 async function startApolloServer() {
@@ -62,7 +64,7 @@ async function startApolloServer() {
 
                     }
                 }
-                console.log(user, "after")
+                // console.log(user, "after")
                 return {user};
             },
             typeDefs,
