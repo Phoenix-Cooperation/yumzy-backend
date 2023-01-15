@@ -18,8 +18,6 @@ export default {
                 results: allTips,
             });
             return returnResponse({
-                status: true,
-                code: 200,
                 message: 'All Content get Success',
                 data: paginatedAllTips,
                 cursor: paginatedAllTips.length ? paginatedAllTips[paginatedAllTips.length - 1].cursor : null,
@@ -47,8 +45,6 @@ export default {
                 results: allRecipe,
             });
             return returnResponse({
-                status: true,
-                code: 200,
                 message: 'All Content get Success',
                 data: paginatedAllRecipe,
                 cursor: paginatedAllRecipe.length ? paginatedAllRecipe[paginatedAllRecipe.length - 1].cursor : null,
@@ -59,19 +55,42 @@ export default {
 
             })
         },
+
+        /**
+         * @param pageSize - page size
+         * @param after - cursor result to check whether user come to bottom of the page
+         * @return returnResponse get all Post wih pagination
+         * */
+        getAllPosts: async (_, {pageSize = 20, after}, {dataSources}) => {
+            console.log("dataSources", dataSources)
+            const allPostContent = await  dataSources.PostContentAPI.getAllPostContent();
+            allPostContent.reverse();
+
+            const paginatedAllPstContent = paginateResults({
+                after,
+                pageSize,
+                results: allPostContent,
+            });
+            return returnResponse({
+                message: 'All Content get Success',
+                data: paginatedAllPstContent,
+                cursor: paginatedAllPstContent.length ? paginatedAllPstContent[paginatedAllPstContent.length - 1].cursor : null,
+                hasMore: paginatedAllPstContent.length
+                    ? paginatedAllPstContent[paginatedAllPstContent.length - 1].cursor !==
+                    paginatedAllPstContent[paginatedAllPstContent.length - 1].cursor
+                    : false,
+
+            })
+        },
     }
 }
 const returnResponse = ({
-                            status,
-                            code,
                             message,
                             data,
                             cursor,
                             hasMore
                         }) => {
     return {
-        status: status,
-        code: code,
         message: message,
         data: data,
         cursor: cursor,
