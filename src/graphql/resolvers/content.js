@@ -5,7 +5,7 @@ export default {
   Query: {
     getContent: async (_, {pageSize = 20, after = 0 }, { dataSources }) => {
       try {
-        const content = await dataSources.PostAPI.getContent({ pageSize, after })
+        const content = await dataSources.ContentAPI.getContent({ pageSize, after })
         console.log(content, "query")
         return content
       } catch (error) {
@@ -18,7 +18,7 @@ export default {
   Mutation: {
     createRecipe: async (_, { recipeInput }, { dataSources }) => {
       try {
-        const recipe = await dataSources.PostAPI.createRecipe(recipeInput)
+        const recipe = await dataSources.ContentAPI.createRecipe(recipeInput)
       } catch (error) {
         throw new ErrorResponse({ message: `Cannot create recipe: ${error.message}`})
       }
@@ -27,7 +27,7 @@ export default {
     },
     createTips: async (_, { tipsInput }, { dataSources }) => {
       try {
-        const tips = await dataSources.PostAPI.createTips(tipsInput)
+        const tips = await dataSources.ContentAPI.createTips(tipsInput)
       } catch (error) {
         throw new ErrorResponse({ message: `Cannot create tips: ${error.message}`})
       }
@@ -36,7 +36,7 @@ export default {
 
     createPost: async (_, { postInput }, { dataSources }) => {
       try {
-        const post = await dataSources.PostAPI.createPost(postInput)
+        const post = await dataSources.ContentAPI.createPost(postInput)
         
       } catch (error) {
         throw new ErrorResponse({ message: `Cannot create post: ${error.message}`})

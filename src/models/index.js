@@ -4,7 +4,7 @@ import console from 'consola';
 import dbConfig from '../config/db/dbConfig.js';
 import UserModel from "./user.js";
 import RoleModel from "./role.js";
-import {RecipeModel, TipsModel, PostModel} from "./post.js";
+import {RecipeModel, TipsModel, PostModel, ContentDetailModel} from "./content.js";
 
 const {success, error} = console;
 
@@ -78,7 +78,8 @@ export const createStore = () => {
 
     User.hasMany(Tips)
     Tips.belongsTo(User)
-
+    
+    const ContentDetail = db.define('contentDetail', ContentDetailModel)
     try {
         // db.sync({ force : true })
         db.sync()
@@ -89,7 +90,7 @@ export const createStore = () => {
 
 
     // const ROLES = ["user", "admin", "moderator"];
-    return {db, User, Role, Recipe, Tips, Post}
+    return {db, User, Role, Recipe, Tips, Post, ContentDetail}
 }
 
     
