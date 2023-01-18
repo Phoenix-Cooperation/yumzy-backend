@@ -196,7 +196,9 @@ class ContentAPI extends DataSource {
       const tips = await this.getTipsByIds({ contentIds: tipsIds })
 
       // console.log(recipes.concat(posts, tips))
-      return recipes.concat(posts, tips)
+
+      const content = recipes.concat(posts, tips);
+      return [...content].sort(() => Math.random() - 0.5);
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
