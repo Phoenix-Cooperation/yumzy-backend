@@ -23,7 +23,7 @@ class ContentAPI extends DataSource {
     }
 
     const { user_id }= this.context.user;
-    console.log("post api userid", user_id)
+    // console.log("post api userid", user_id)
     const { dataValues: user } = await this.store.User.findOne({
       where: {
         user_id
