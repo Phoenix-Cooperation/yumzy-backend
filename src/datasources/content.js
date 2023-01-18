@@ -33,11 +33,16 @@ class PostAPI extends DataSource {
     try {
       const recipePost = new this.store.Recipe(recipePostData);
       recipePost.userId = user.id
-      const recipePostVal = await recipePost.save();
-      console.log("post api recipe", recipePostVal.dataValues)
+      const recipeVal = await recipePost.save();
       
+      const { dataValues: { id }} = recipeVal;
+      const tempContentDetail = { contentId: id, contentType: "recipe"}
+      const contentDetail = new this.store.ContentDetail(tempContentDetail)
+      const contentDetailVal = await contentDetail.save()
+
+
       success({ badge: true, message: "Recipe Created!" })
-      return recipePostVal.dataValues;
+      return recipeVal.dataValues;
 
     }
     catch (err) {
@@ -64,6 +69,11 @@ class PostAPI extends DataSource {
       const tips = new this.store.Tips(tipsData)
       tips.userId = user.id
       const tipsVal = await tips.save()
+
+      const { dataValues: { id }} = tipsVal;
+      const tempContentDetail = { contentId: id, contentType: "tips"}
+      const contentDetail = new this.store.ContentDetail(tempContentDetail)
+      const contentDetailVal = await contentDetail.save()
 
       success({ badge: true,  message: "Tips Created!"})
       return tipsVal.dataValues;
@@ -92,6 +102,11 @@ class PostAPI extends DataSource {
       const post = new this.store.Post(postData)
       post.userId = user.id
       const postVal = await post.save()
+      const { dataValues: { id } } = postVal;
+
+      const tempContentDetail = { contentId: id, contentType: "post"}
+      const contentDetail = new this.store.ContentDetail(tempContentDetail)
+      const contentDetailVal = await contentDetail.save()
 
       success({ badge: true,  message: "Post Created!"})
       return postVal.dataValues;
