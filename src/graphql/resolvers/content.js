@@ -2,6 +2,19 @@ import { ErrorResponse } from "../../util/errorHandler/errorResponse.js";
 
 
 export default {
+  Query: {
+    getContent: async (_, {pageSize = 20, after = 0 }, { dataSources }) => {
+      try {
+        const content = await dataSources.PostAPI.getContent({ pageSize, after })
+        console.log(content, "query")
+        return content
+      } catch (error) {
+        throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})
+      }
+
+     
+    }
+  },
   Mutation: {
     createRecipe: async (_, { recipeInput }, { dataSources }) => {
       try {
@@ -29,6 +42,6 @@ export default {
         throw new ErrorResponse({ message: `Cannot create post: ${error.message}`})
       }
       return post;
-    }
+    },
   }
 }
