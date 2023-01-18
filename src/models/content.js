@@ -2,6 +2,11 @@ import sequelize, { DataTypes} from "sequelize";
 
 
 export const RecipeModel = {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+    },
     title: {
         type: sequelize.STRING
     },
@@ -27,6 +32,11 @@ export const RecipeModel = {
 }
 
 export const TipsModel = {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+    },
     title: {
         type: sequelize.STRING
     },
@@ -43,6 +53,11 @@ export const TipsModel = {
 
 
 export const PostModel = {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+    },
     title: {
         type: sequelize.STRING
     },
@@ -54,5 +69,15 @@ export const PostModel = {
     },
     tags: {
         type: DataTypes.ARRAY(sequelize.STRING)
+    }
+}
+
+
+export const ContentDetailModel = {
+    contentId: {
+        type: DataTypes.UUID,
+    }, 
+    contentType: {
+        type: sequelize.STRING
     }
 }
