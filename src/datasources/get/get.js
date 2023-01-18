@@ -3,7 +3,7 @@ import console from "consola";
 import * as GetAPI from "./index.js";
 const { success, error } = console;
 
-class TipAPI extends DataSource {
+class GetWrapper extends DataSource {
     constructor({store}) {
         super();
         this.store = store;
@@ -45,4 +45,4 @@ class TipAPI extends DataSource {
 
 }
 
-export default TipAPI;
+export default GetWrapper;

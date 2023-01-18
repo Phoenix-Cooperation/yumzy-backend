@@ -13,7 +13,7 @@ import UserAPI from "./datasources/user.js";
 import PostAPI from "./datasources/post.js";
 import RecipeAPI from './datasources/get/recipe.js';
 import TipAPI from './datasources/get/tip.js';
-import GetTipAPI from "./datasources/get/get.js";
+import PostContentAPI from "./datasources/get/PostContent.js";
 
 const {error, success} = console;
 
@@ -31,6 +31,7 @@ const dataSources = () => ({
     PostAPI: new PostAPI({store}),
     RecipeAPI: new RecipeAPI({store}),
     TipAPI: new TipAPI({store}),
+    PostContentAPI: new PostContentAPI({store}),
 });
 
 async function startApolloServer() {
