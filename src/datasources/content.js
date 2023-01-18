@@ -1,9 +1,10 @@
 import { DataSource } from "apollo-datasource";
 import console from 'consola';
+import { Op } from "sequelize";
 
 const { success, error } = console;
 
-class PostAPI extends DataSource {
+class ContentAPI extends DataSource {
   constructor({ store }) {
     super();
     this.store = store;
@@ -117,6 +118,92 @@ class PostAPI extends DataSource {
 
   }
 
+  async getRecipesByIds({contentIds}) {
+    if (contentIds === []) return [];
+
+    try {
+      const recipeVals = await this.store.Recipe.findAll({
+        where: {
+          id: {
+            [Op.in]: contentIds
+          }
+        } 
+      })
+      const recipes = recipeVals.map(data => ({ type: "recipe", ...data.dataValues }));
+      return recipes;
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async getPostsByIds({contentIds}) {
+    if (contentIds === []) return [];
+
+    try {
+      const postVals = await this.store.Post.findAll({
+        where: {
+          id: {
+            [Op.in]: contentIds
+          }
+        }
+      })
+      const posts = postVals.map(data => ({ type:"post", ...data.dataValues}))
+      return posts;
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async getTipsByIds({contentIds}) {
+    if (contentIds === []) return [];
+
+    try {
+      const tipsVals = await this.store.Tips.findAll({
+        where: {
+          id: {
+            [Op.in]: contentIds
+          }
+        }
+      })
+      const tips = tipsVals.map(data => ({ type:"tips", ...data.dataValues }))
+      return tips;
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  
+
+  async getContent({pageSize, after}) {
+    try {
+      const allContent = await this.store.ContentDetail.findAll({
+        order: [['createdAt', 'DESC']],
+      })
+      console.log(pageSize, after)
+      const slicedContent = allContent.slice(after, after + pageSize).map(data => data.dataValues)
+      // const { dataValues: {}}
+      // console.log(slicedContent, "slicedContent")
+
+      const recipeIds = slicedContent.filter(data => data?.contentType === "recipe").map(data => data?.contentId)
+      const postIds = slicedContent.filter(data => data?.contentType === "post").map(data => data.contentId)
+      const tipsIds =  slicedContent.filter(data => data?.contentType === "tips").map(data => data.contentId)
+      
+      const recipes = await this.getRecipesByIds({ contentIds: recipeIds })
+      const posts = await this.getPostsByIds({ contentIds: postIds })
+      const tips = await this.getTipsByIds({ contentIds: tipsIds })
+
+      // console.log(recipes.concat(posts, tips))
+      return recipes.concat(posts, tips)
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+
+  }
+
 }
 
-export default PostAPI;
+export default ContentAPI;

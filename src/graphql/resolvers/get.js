@@ -61,27 +61,27 @@ export default {
          * @param after - cursor result to check whether user come to bottom of the page
          * @return returnResponse get all Post wih pagination
          * */
-        getAllPosts: async (_, {pageSize = 20, after}, {dataSources}) => {
-            console.log("dataSources", dataSources)
-            const allPostContent = await  dataSources.PostContentAPI.getAllPostContent();
-            allPostContent.reverse();
+        // getAllPosts: async (_, {pageSize = 20, after}, {dataSources}) => {
+        //     console.log("dataSources", dataSources)
+        //     const allPostContent = await  dataSources.PostContentAPI.getAllPostContent();
+        //     allPostContent.reverse();
 
-            const paginatedAllPstContent = paginateResults({
-                after,
-                pageSize,
-                results: allPostContent,
-            });
-            return returnResponse({
-                message: 'All Content get Success',
-                data: paginatedAllPstContent,
-                cursor: paginatedAllPstContent.length ? paginatedAllPstContent[paginatedAllPstContent.length - 1].cursor : null,
-                hasMore: paginatedAllPstContent.length
-                    ? paginatedAllPstContent[paginatedAllPstContent.length - 1].cursor !==
-                    paginatedAllPstContent[paginatedAllPstContent.length - 1].cursor
-                    : false,
+        //     const paginatedAllPstContent = paginateResults({
+        //         after,
+        //         pageSize,
+        //         results: allPostContent,
+        //     });
+        //     return returnResponse({
+        //         message: 'All Content get Success',
+        //         data: paginatedAllPstContent,
+        //         cursor: paginatedAllPstContent.length ? paginatedAllPstContent[paginatedAllPstContent.length - 1].cursor : null,
+        //         hasMore: paginatedAllPstContent.length
+        //             ? paginatedAllPstContent[paginatedAllPstContent.length - 1].cursor !==
+        //             paginatedAllPstContent[paginatedAllPstContent.length - 1].cursor
+        //             : false,
 
-            })
-        },
+        //     })
+        // },
     }
 }
 const returnResponse = ({
