@@ -1,11 +1,11 @@
 import auth from "./auth.js"
-import post from "./post.js";
+import content from "./content.js";
 import get from './get.js'
 import baseDefs from "./baseDefs.js";
 
 export default [
     baseDefs,
     auth,
-    post,
+    content,
     get
 ]

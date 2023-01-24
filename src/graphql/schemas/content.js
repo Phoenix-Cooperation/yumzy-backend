@@ -2,13 +2,28 @@ import {gql} from 'apollo-server-express';
 
 export default gql`
 
-
     extend type Mutation {
         createRecipe(recipeInput: RecipeInput!): Recipe
         createTips(tipsInput: TipsInput!): Tips
         createPost(postInput: PostInput!): Post
     }
 
+    extend type Query {
+        getContent(pageSize: Int!, after: Int): [Content!]
+    }
+
+    type Content {
+        id: String
+        type: String!
+        title: String!
+        description: String
+        ingredients: [String!]
+        images: [String!]
+        method: String
+        time: String
+        tips: String!
+        tags: [String]
+    }
 
     type Recipe {
         id: Int!
