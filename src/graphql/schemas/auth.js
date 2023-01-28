@@ -29,6 +29,7 @@ export default gql`
         username: String!
         email: String!
         user_id: String!
+        photoURL: String
     }
     
     type Role {

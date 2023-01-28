@@ -1,3 +1,4 @@
+import { validateSDL } from "graphql/validation/validate.js";
 import { ErrorResponse } from "../../util/errorHandler/errorResponse.js";
 
 
@@ -5,8 +6,15 @@ export default {
   Query: {
     getContent: async (_, {pageSize = 20, after = 0 }, { dataSources }) => {
       try {
-        const content = await dataSources.ContentAPI.getContent({ pageSize, after })
-        // console.log(content, "query")
+        let content = await dataSources.ContentAPI.getContent({ pageSize, after })
+
+        content = await Promise.all(content.map(async (data) => {
+          console.log("data", data)
+          const { user: { user_id }, user,  ...val } = data
+          const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
+          return {...val, user: { ...user, photoURL } }
+        }))
+
         return content
       } catch (error) {
         throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})
