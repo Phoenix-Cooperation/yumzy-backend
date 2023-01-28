@@ -19,9 +19,19 @@ export default {
       } catch (error) {
         throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})
       }
-
-     
-    }
+    },
+    getRecipeById: async (_, { id }, { dataSources }) => {
+      const recipe = await dataSources.ContentAPI.getSingleRecipeById(id);
+      return recipe
+    },
+    getPostById: async (_, { id }, { dataSources }) => {
+      const post = await dataSources.ContentAPI.getSinglePostById(id);
+      return post;
+    },
+    getTipsById: async (_, { id }, { dataSources }) => {
+      const tips = await dataSources.ContentAPI.getSingleTipsById(id);
+      return tips;
+    },
   },
   Mutation: {
     createRecipe: async (_, { recipeInput }, { dataSources }) => {

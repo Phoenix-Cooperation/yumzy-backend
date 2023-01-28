@@ -10,6 +10,9 @@ export default gql`
 
     extend type Query {
         getContent(pageSize: Int!, after: Int): [Content!]
+        getRecipeById(id: String!): Recipe
+        getPostById(id: String!): Post
+        getTipsById(id: String!): Tips
     }
 
     type Content {
@@ -27,7 +30,7 @@ export default gql`
     }
 
     type Recipe {
-        id: Int!
+        id: String!
         title: String!
         description: String!
         ingredients: [String!]
@@ -48,7 +51,7 @@ export default gql`
     }
 
     type Tips {
-        id: Int!
+        id: String!
         title: String!
         tips: String!
         images: [String]
@@ -63,7 +66,7 @@ export default gql`
     }
 
     type Post{
-        id: Int!
+        id: String!
         title: String!
         description: String!
         images: [String]
@@ -77,7 +80,7 @@ export default gql`
         tags: [String]
     }
     type CreatePostResponse {
-        id: Int!
+        id: String!
         title: String!
         content: String!
         createdAt: String!
