@@ -9,7 +9,6 @@ export default {
         let content = await dataSources.ContentAPI.getContent({ pageSize, after })
 
         content = await Promise.all(content.map(async (data) => {
-          console.log("data", data)
           const { user: { user_id }, user,  ...val } = data
           const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
           return {...val, user: { ...user, photoURL } }
@@ -19,9 +18,19 @@ export default {
       } catch (error) {
         throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})
       }
-
-     
-    }
+    },
+    getRecipeById: async (_, { id }, { dataSources }) => {
+      const recipe = await dataSources.ContentAPI.getSingleRecipeById(id);
+      return recipe
+    },
+    getPostById: async (_, { id }, { dataSources }) => {
+      const post = await dataSources.ContentAPI.getSinglePostById(id);
+      return post;
+    },
+    getTipsById: async (_, { id }, { dataSources }) => {
+      const tips = await dataSources.ContentAPI.getSingleTipsById(id);
+      return tips;
+    },
   },
   Mutation: {
     createRecipe: async (_, { recipeInput }, { dataSources }) => {

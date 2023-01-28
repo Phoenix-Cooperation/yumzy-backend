@@ -16,7 +16,6 @@ class ContentAPI extends DataSource {
 
   async createRecipe(recipePostData) {
 
-    console.log("post", this.context.user)
     if (!this.context.user) {
       error({badge: true, message: 'User not logged in'})
       throw new Error('Error! User is not logged in');
@@ -223,9 +222,39 @@ class ContentAPI extends DataSource {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
     }
-
   }
 
+  async getSingleRecipeById(id) {
+    try {
+      // const { dataValues: recipe } = await this.store.Recipe.findByPk(id)
+      const data = await this.store.Recipe.findByPk(id);
+      // console.log(data.dataValues)
+      return data.dataValues
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async getSinglePostById(id) {
+    try {
+      const data = await this.store.Post.findByPk(id)
+      return data.dataValues
+    } catch (error) {
+rerror({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async getSingleTipsById(id) {
+    try {
+      const data = await this.store.Tips.findByPk(id)
+      return data.dataValues
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
 }
 
 export default ContentAPI;

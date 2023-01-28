@@ -69,7 +69,6 @@ class UserAPI extends DataSource {
     async getUserPhotoURL(user_id) {
         try {
             const { photoURL } = await this.firebaseAuth.getUser(user_id);
-            console.log( photoURL )
             return photoURL;
         } catch (error) {
             error({ badge: true, message: `UserApi error- ${error}`})
