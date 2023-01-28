@@ -52,11 +52,11 @@ async function startApolloServer() {
                             .auth()
                             .verifyIdToken(idToken)
                             .then(function (decodedToken) {
-                                console.log(decodedToken)
-                                // success({badge: true, message: `decodedToken`});
+                                // console.log(decodedToken)
+                                success({badge: true, message: `decodedToken`});
                                 const {name, user_id} = decodedToken
                                 user = {name, user_id};
-                                // console.log(user, "user")
+                                console.log(user, "user")
 
                             })
                             .catch((err) => {

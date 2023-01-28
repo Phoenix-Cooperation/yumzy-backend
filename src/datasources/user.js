@@ -1,11 +1,13 @@
 import { DataSource } from 'apollo-datasource';
 import console from 'consola';
+import admin from '../config/firebase/firebase-config.js';
 
 const { success, error } = console
 class UserAPI extends DataSource {
     constructor({ store }) {
         super();
         this.store = store;
+        this.firebaseAuth = admin.auth()
     }
 
     initialize(config) {
@@ -61,6 +63,16 @@ class UserAPI extends DataSource {
         } catch (err) {
             error({ badge: true, message: err.message })
             return null
+        }
+    }
+
+    async getUserPhotoURL(user_id) {
+        try {
+            const { photoURL } = await this.firebaseAuth.getUser(user_id);
+            console.log( photoURL )
+            return photoURL;
+        } catch (error) {
+            error({ badge: true, message: `UserApi error- ${error}`})
         }
     }
 
