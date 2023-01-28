@@ -127,9 +127,16 @@ class ContentAPI extends DataSource {
           id: {
             [Op.in]: contentIds
           }
-        } 
-      })
-      const recipes = recipeVals.map(data => ({ type: "recipe", ...data.dataValues }));
+        },
+        include: 'user',
+      });
+
+      const recipes = recipeVals.map(data => {
+        const { user, ...vals} = data.dataValues;
+        return { type: 'recipe', ...vals, user: user.dataValues}
+      });
+
+      console.log(recipes[0])
       return recipes;
     } catch (err) {
       error({ badge: true, message: err.message })
@@ -146,9 +153,16 @@ class ContentAPI extends DataSource {
           id: {
             [Op.in]: contentIds
           }
-        }
+        },
+        include: 'user',
       })
-      const posts = postVals.map(data => ({ type:"post", ...data.dataValues}))
+
+      
+      const posts = postVals.map(data => {
+        const { user, ...vals} = data.dataValues;
+        return { type: 'post', ...vals, user: user.dataValues}
+      });
+
       return posts;
     } catch (err) {
       error({ badge: true, message: err.message })
@@ -165,9 +179,15 @@ class ContentAPI extends DataSource {
           id: {
             [Op.in]: contentIds
           }
-        }
+        },
+        include: 'user'
       })
-      const tips = tipsVals.map(data => ({ type:"tips", ...data.dataValues }))
+
+      const tips = tipsVals.map(data => {
+        const { user, ...vals} = data.dataValues;
+        return { type: 'tips', ...vals, user: user.dataValues}
+      })
+
       return tips;
     } catch (err) {
       error({ badge: true, message: err.message })
