@@ -23,6 +23,7 @@ export default gql`
         time: String
         tips: String!
         tags: [String]
+        user: User
     }
 
     type Recipe {
