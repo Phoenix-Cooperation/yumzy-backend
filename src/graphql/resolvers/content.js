@@ -9,7 +9,6 @@ export default {
         let content = await dataSources.ContentAPI.getContent({ pageSize, after })
 
         content = await Promise.all(content.map(async (data) => {
-          console.log("data", data)
           const { user: { user_id }, user,  ...val } = data
           const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
           return {...val, user: { ...user, photoURL } }
