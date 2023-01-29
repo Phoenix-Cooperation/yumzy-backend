@@ -7,6 +7,7 @@ export default gql`
         createTips(tipsInput: TipsInput!): Tips
         createPost(postInput: PostInput!): Post
         reactToContent(contentId: String!): messageResponse
+        unReactToContent(contentId: String!): messageResponse
     }
 
     extend type Query {
@@ -36,6 +37,8 @@ export default gql`
         tips: String
         tags: [String]
         user: User
+        reactCount: Int
+        currentUserReacted: Boolean
     }
 
     type Recipe {
