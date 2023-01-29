@@ -135,7 +135,6 @@ class ContentAPI extends DataSource {
         return { type: 'recipe', ...vals, user: user.dataValues}
       });
 
-      console.log(recipes[0])
       return recipes;
     } catch (err) {
       error({ badge: true, message: err.message })
