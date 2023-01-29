@@ -242,8 +242,8 @@ class ContentAPI extends DataSource {
     try {
       const data = await this.store.Post.findByPk(id)
       return data.dataValues
-    } catch (error) {
-rerror({ badge: true, message: err.message })
+    } catch (err) {
+      error({ badge: true, message: err.message })
       throw new Error(err.message)
     }
   }
@@ -255,6 +255,86 @@ rerror({ badge: true, message: err.message })
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
+    }
+  }
+
+  async reactToRecipe(id, addReact) {
+    try {
+      let contentData = await this.getSingleRecipeById(id);
+      
+      contentData.reactCount = contentData.reactCount + 1;
+      await this.store.Recipe.update(contentData, {
+        where: { id }
+      })
+      
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async reactToPost(id, addReact) {
+    try {
+      let contentData = await this.getSinglePostById(id);
+
+      contentData.reactCount = contentData.reactCount + 1;
+      await this.store.Post.update(contentData, {
+        where: { id }
+      })
+      
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async reactToTips(id, addReact) {
+    try {
+      let contentData = await this.getSingleTipsById(id);
+
+      contentData.reactCount = contentData.reactCount + 1;
+      await this.store.Tips.update(contentData, {
+        where: { id }
+      })
+
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async reactToContent(id) {
+    if (!this.context.user) {
+      error({badge: true, message: 'User not logged in'})
+      throw new Error('Error! User is not logged in');
+    }
+
+    const { user_id } = this.context.user;
+
+    try {
+      const vals = await this.store.ContentDetail.findOne({
+        where: {
+          contentId : id
+        }
+      })
+      
+      const { dataValues: ContentDetail } = vals;
+      const { contentType } = ContentDetail;
+      
+      if (contentType === "recipe") {
+        await this.reactToRecipe(id, true)
+      } else if (contentType === "post") {
+        await this.reactToPost(id, true);
+      } else if (contentType === "tips") {
+        await this.reactToTips(id, true);
+      }
+
+      const contentReact= await new this.store.ContentReact({ contentId: id, user_id })
+      await contentReact.save()
+      return { message: "success" }
+    }
+    catch (err) {
+      console.log(err)
     }
   }
 }

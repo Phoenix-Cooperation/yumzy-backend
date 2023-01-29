@@ -6,6 +6,7 @@ export default gql`
         createRecipe(recipeInput: RecipeInput!): Recipe
         createTips(tipsInput: TipsInput!): Tips
         createPost(postInput: PostInput!): Post
+        reactToContent(contentId: String!): messageResponse
     }
 
     extend type Query {
@@ -15,6 +16,9 @@ export default gql`
         getTipsById(id: String!): Tips
     }
 
+    type messageResponse {
+        message: String
+    }
     type getContentResponse {
         content: [Content!]
         hasMore: Boolean

@@ -1,4 +1,4 @@
-import sequelize, { DataTypes} from "sequelize";
+import sequelize, { DataTypes, Sequelize} from "sequelize";
 
 
 export const RecipeModel = {
@@ -27,6 +27,9 @@ export const RecipeModel = {
     },
     method: {
         type: sequelize.STRING,
+    },
+    reactCount: {
+        type: sequelize.INTEGER
     }
 
 }
@@ -48,6 +51,9 @@ export const TipsModel = {
     },
     tags: {
         type: DataTypes.ARRAY(sequelize.STRING)
+    },
+    reactCount: {
+        type: sequelize.INTEGER
     }
 }
 
@@ -69,6 +75,9 @@ export const PostModel = {
     },
     tags: {
         type: DataTypes.ARRAY(sequelize.STRING)
+    },
+    reactCount: {
+        type: sequelize.INTEGER
     }
 }
 
@@ -78,6 +87,15 @@ export const ContentDetailModel = {
         type: DataTypes.UUID,
     }, 
     contentType: {
+        type: sequelize.STRING
+    }
+}
+
+export const ContentReactModel = {
+    contentId: {
+        type: DataTypes.UUID
+    },
+    user_id: {
         type: sequelize.STRING
     }
 }
