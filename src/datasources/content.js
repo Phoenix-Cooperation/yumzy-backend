@@ -135,7 +135,6 @@ class ContentAPI extends DataSource {
         return { type: 'recipe', ...vals, user: user.dataValues}
       });
 
-      console.log(recipes[0])
       return recipes;
     } catch (err) {
       error({ badge: true, message: err.message })
@@ -201,10 +200,11 @@ class ContentAPI extends DataSource {
       const allContent = await this.store.ContentDetail.findAll({
         order: [['createdAt', 'DESC']],
       })
-      console.log(pageSize, after)
       const slicedContent = allContent.slice(after, after + pageSize).map(data => data.dataValues)
-      // const { dataValues: {}}
-      // console.log(slicedContent, "slicedContent")
+      let hasMore = false;
+
+      console.log(slicedContent.length + after, allContent.length)
+      if (slicedContent.length + after < allContent.length) hasMore = true
 
       const recipeIds = slicedContent.filter(data => data?.contentType === "recipe").map(data => data?.contentId)
       const postIds = slicedContent.filter(data => data?.contentType === "post").map(data => data.contentId)
@@ -216,8 +216,10 @@ class ContentAPI extends DataSource {
 
       // console.log(recipes.concat(posts, tips))
 
-      const content = recipes.concat(posts, tips);
-      return [...content].sort(() => Math.random() - 0.5);
+      let content = recipes.concat(posts, tips);
+      content = [...content].sort(() => Math.random() - 0.5);
+
+      return { content , hasMore };
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)

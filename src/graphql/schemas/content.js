@@ -9,10 +9,15 @@ export default gql`
     }
 
     extend type Query {
-        getContent(pageSize: Int!, after: Int): [Content!]
+        getContent(pageSize: Int!, after: Int): getContentResponse
         getRecipeById(id: String!): Recipe
         getPostById(id: String!): Post
         getTipsById(id: String!): Tips
+    }
+
+    type getContentResponse {
+        content: [Content!]
+        hasMore: Boolean
     }
 
     type Content {
@@ -24,7 +29,7 @@ export default gql`
         images: [String!]
         method: String
         time: String
-        tips: String!
+        tips: String
         tags: [String]
         user: User
     }
