@@ -63,6 +63,11 @@ export default {
     reactToContent: async (_, { contentId }, { dataSources}) => {
       const message = await dataSources.ContentAPI.reactToContent(contentId);
       return message;
+    },
+
+    unReactToContent: async (_, { contentId }, { dataSources }) => {
+      const message = await dataSources.ContentAPI.unReactToContent(contentId);
+      return message;
     }
   }
 }

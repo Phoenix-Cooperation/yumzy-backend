@@ -193,10 +193,26 @@ class ContentAPI extends DataSource {
     }
   }
 
+
+  async checkCurrentUserReacted(contentId, user_id) {
+    const status = await this.store.ContentReact.findOne({
+      where: {
+        contentId, 
+        user_id
+      }
+    });
+
+    if (status) return true;
+
+    return false;
+  }
   
 
   async getContent({pageSize, after}) {
     try {
+
+      const { user_id } = this.context.user;
+
       const allContent = await this.store.ContentDetail.findAll({
         order: [['createdAt', 'DESC']],
       })
@@ -217,6 +233,12 @@ class ContentAPI extends DataSource {
       // console.log(recipes.concat(posts, tips))
 
       let content = recipes.concat(posts, tips);
+
+      content = await Promise.all(content.map(async (data) => {
+        const { id, ...vals } = data;
+        const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
+        return { ...vals, currentUserReacted }
+      }))
       content = [...content].sort(() => Math.random() - 0.5);
 
       return { content , hasMore };
@@ -258,7 +280,7 @@ class ContentAPI extends DataSource {
     }
   }
 
-  async reactToRecipe(id, addReact) {
+  async reactToRecipe(id) {
     try {
       let contentData = await this.getSingleRecipeById(id);
       
@@ -273,7 +295,22 @@ class ContentAPI extends DataSource {
     }
   }
 
-  async reactToPost(id, addReact) {
+  async unReactToRecipe(id) {
+    try {
+      let contentData = await this.getSingleRecipeById(id);
+      
+      contentData.reactCount = contentData.reactCount - 1;
+      await this.store.Recipe.update(contentData, {
+        where: { id }
+      })
+      
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async reactToPost(id) {
     try {
       let contentData = await this.getSinglePostById(id);
 
@@ -288,11 +325,41 @@ class ContentAPI extends DataSource {
     }
   }
 
-  async reactToTips(id, addReact) {
+  async unReactToPost(id) {
+    try {
+      let contentData = await this.getSinglePostById(id);
+
+      contentData.reactCount = contentData.reactCount - 1;
+      await this.store.Post.update(contentData, {
+        where: { id }
+      })
+      
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async reactToTips(id) {
     try {
       let contentData = await this.getSingleTipsById(id);
 
       contentData.reactCount = contentData.reactCount + 1;
+      await this.store.Tips.update(contentData, {
+        where: { id }
+      })
+
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async reactToTips(id) {
+    try {
+      let contentData = await this.getSingleTipsById(id);
+
+      contentData.reactCount = contentData.reactCount - 1;
       await this.store.Tips.update(contentData, {
         where: { id }
       })
@@ -322,11 +389,11 @@ class ContentAPI extends DataSource {
       const { contentType } = ContentDetail;
       
       if (contentType === "recipe") {
-        await this.reactToRecipe(id, true)
+        await this.reactToRecipe(id)
       } else if (contentType === "post") {
-        await this.reactToPost(id, true);
+        await this.reactToPost(id);
       } else if (contentType === "tips") {
-        await this.reactToTips(id, true);
+        await this.reactToTips(id);
       }
 
       const contentReact= await new this.store.ContentReact({ contentId: id, user_id })
@@ -335,6 +402,45 @@ class ContentAPI extends DataSource {
     }
     catch (err) {
       console.log(err)
+    }
+  }
+
+  async unReactToContent(id) {
+    if (!this.context.user) {
+      error({badge: true, message: 'User not logged in'})
+      throw new Error('Error! User is not logged in');
+    }
+
+    const { user_id } = this.context.user;
+
+    try {
+      const vals = await this.store.ContentDetail.findOne({
+        where: {
+          contentId : id
+        }
+      });
+
+      const { dataValues: ContentDetail } = vals;
+      const { contentType } = ContentDetail;
+
+      if (contentType === "recipe") {
+        await this.unReactToRecipe(id)
+      } else if (contentType === "post") {
+        await this.unReactToPost(id);
+      } else if (contentType === "tips") {
+        await this.unReactToTips(id);
+      }
+
+      await this.store.ContentReact.destroy({
+        where: {
+          contentId: id,
+          user_id
+        }
+      })
+
+      return { message: "success" }
+    } catch (error) {
+      
     }
   }
 }
