@@ -59,5 +59,10 @@ export default {
         throw new ErrorResponse({ message: `Cannot create post: ${error.message}`})
       }
     },
+
+    reactToContent: async (_, { contentId }, { dataSources}) => {
+      const message = await dataSources.ContentAPI.reactToContent(contentId);
+      return message;
+    }
   }
 }
