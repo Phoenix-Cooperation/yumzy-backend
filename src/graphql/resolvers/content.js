@@ -6,7 +6,7 @@ export default {
   Query: {
     getContent: async (_, {pageSize = 20, after = 0 }, { dataSources }) => {
       try {
-        let content = await dataSources.ContentAPI.getContent({ pageSize, after })
+        let { content, hasMore }= await dataSources.ContentAPI.getContent({ pageSize, after })
 
         content = await Promise.all(content.map(async (data) => {
           const { user: { user_id }, user,  ...val } = data
@@ -14,7 +14,7 @@ export default {
           return {...val, user: { ...user, photoURL } }
         }))
 
-        return content
+        return { content, hasMore }
       } catch (error) {
         throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})
       }
