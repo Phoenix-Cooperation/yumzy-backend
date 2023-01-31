@@ -50,6 +50,8 @@ export default gql`
         method: String!
         time: String!
         tags: [String]
+        reactCount: Int
+        currentUserReacted: Boolean
     }
 
     input RecipeInput {
@@ -68,6 +70,8 @@ export default gql`
         tips: String!
         images: [String]
         tags: [String]
+        reactCount: Int
+        currentUserReacted: Boolean
     }
 
     input TipsInput {
@@ -83,6 +87,8 @@ export default gql`
         description: String!
         images: [String]
         tags: [String]
+        reactCount: Int
+        currentUserReact: Boolean
     }
 
     input PostInput {

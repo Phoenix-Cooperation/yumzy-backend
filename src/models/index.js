@@ -87,7 +87,21 @@ export const createStore = () => {
     
     const ContentDetail = db.define('contentDetail', ContentDetailModel)
 
-    const ContentReact = db.define('contentReact', ContentReactModel)
+    const ContentReact = db.define('contentReact', 
+        ContentReactModel,
+        {
+            indexes: [
+                {
+                    unique: true,
+                    fields: ['contentId']
+                }
+            ]
+        }
+    )
+
+    // User.hasMany(ContentReact)
+    // ContentReact.belongsTo(User)
+
     try {
         // db.sync({ force : true })
         db.sync()

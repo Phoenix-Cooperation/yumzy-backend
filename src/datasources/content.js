@@ -253,7 +253,12 @@ class ContentAPI extends DataSource {
       // const { dataValues: recipe } = await this.store.Recipe.findByPk(id)
       const data = await this.store.Recipe.findByPk(id);
       // console.log(data.dataValues)
-      return data.dataValues
+
+      const { user_id } = this.context.user;
+
+      const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
+      console.log("currentUser", currentUserReacted)
+      return { ...data.dataValues, currentUserReacted }
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
@@ -263,7 +268,12 @@ class ContentAPI extends DataSource {
   async getSinglePostById(id) {
     try {
       const data = await this.store.Post.findByPk(id)
-      return data.dataValues
+
+      const { user_id } = this.context.user;
+
+      const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
+      
+      return { ...data.dataValues, currentUserReacted }
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
@@ -273,7 +283,12 @@ class ContentAPI extends DataSource {
   async getSingleTipsById(id) {
     try {
       const data = await this.store.Tips.findByPk(id)
-      return data.dataValues
+      const { user_id } = this.context.user;
+
+      const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
+      
+      return { ...data.dataValues, currentUserReacted }
+
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
