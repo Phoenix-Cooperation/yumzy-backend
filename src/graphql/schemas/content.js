@@ -6,13 +6,23 @@ export default gql`
         createRecipe(recipeInput: RecipeInput!): Recipe
         createTips(tipsInput: TipsInput!): Tips
         createPost(postInput: PostInput!): Post
+        reactToContent(contentId: String!): messageResponse
+        unReactToContent(contentId: String!): messageResponse
     }
 
     extend type Query {
-        getContent(pageSize: Int!, after: Int): [Content!]
+        getContent(pageSize: Int!, after: Int): getContentResponse
         getRecipeById(id: String!): Recipe
         getPostById(id: String!): Post
         getTipsById(id: String!): Tips
+    }
+
+    type messageResponse {
+        message: String
+    }
+    type getContentResponse {
+        content: [Content!]
+        hasMore: Boolean
     }
 
     type Content {
@@ -24,9 +34,11 @@ export default gql`
         images: [String!]
         method: String
         time: String
-        tips: String!
+        tips: String
         tags: [String]
         user: User
+        reactCount: Int
+        currentUserReacted: Boolean
     }
 
     type Recipe {
