@@ -98,3 +98,4 @@ export const ContentReactModel = {
         type: sequelize.STRING
     }
 }
+

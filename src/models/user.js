@@ -15,15 +15,16 @@ import db from '../config/db/database.js';
 // );
 
 const UserModel = {
+    user_id: {
+        type: sequelize.STRING,
+        primaryKey: true,
+    },
     username: {
         type: sequelize.STRING
     },
     email: {
         type: sequelize.STRING
     },
-    user_id: {
-        type: sequelize.STRING
-    }
 }
 
 export default UserModel;

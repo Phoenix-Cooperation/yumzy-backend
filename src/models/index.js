@@ -12,6 +12,8 @@ import {
     ContentReactModel,
 } from "./content.js";
 
+import { CommentModel } from './comment.js';
+
 const {success, error} = console;
 
 export const paginateResults = ({
@@ -72,18 +74,30 @@ export const createStore = () => {
 
     const Recipe = db.define('recipe', RecipeModel)
 
-    User.hasMany(Recipe)
-    Recipe.belongsTo(User)
+    User.hasMany(Recipe, {
+        foreignKey: 'user_id'
+    })
+    Recipe.belongsTo(User, {
+        foreignKey: 'user_id'
+    })
 
     const Post = db.define('post', PostModel)
 
-    User.hasMany(Post)
-    Post.belongsTo(User)
+    User.hasMany(Post, {
+        foreignKey: 'user_id'
+    })
+    Post.belongsTo(User, {
+        foreignKey: 'user_id'
+    })
 
     const Tips = db.define('tips', TipsModel)
 
-    User.hasMany(Tips)
-    Tips.belongsTo(User)
+    User.hasMany(Tips, {
+        foreignKey: 'user_id'
+    })
+    Tips.belongsTo(User, {
+        foreignKey: 'user_id'
+    })
     
     const ContentDetail = db.define('contentDetail', ContentDetailModel)
 
@@ -99,8 +113,19 @@ export const createStore = () => {
         // }
     )
 
-    // User.hasMany(ContentReact)
-    // ContentReact.belongsTo(User)
+    const Comment = db.define('comment', CommentModel)
+
+    ContentDetail.hasMany(Tips)
+    Comment.belongsTo(ContentDetail)
+
+    User.hasMany(Comment, {
+        foreignKey: 'user_id'
+    })
+    Comment.belongsTo(User, {
+        foreignKey: 'user_id'
+    })
+
+   
 
     try {
         // db.sync({ force : true })
@@ -112,7 +137,7 @@ export const createStore = () => {
 
 
     // const ROLES = ["user", "admin", "moderator"];
-    return {db, User, Role, Recipe, Tips, Post, ContentDetail, ContentReact}
+    return {db, User, Role, Recipe, Tips, Post, ContentDetail, ContentReact, Comment}
 }
 
     

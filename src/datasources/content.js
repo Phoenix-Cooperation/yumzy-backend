@@ -23,16 +23,16 @@ class ContentAPI extends DataSource {
 
     const { user_id }= this.context.user;
     // console.log("post api userid", user_id)
-    const { dataValues: user } = await this.store.User.findOne({
-      where: {
-        user_id
-      }
-    })
-    console.log("post api user", user);
+    // const { dataValues: user } = await this.store.User.findOne({
+    //   where: {
+    //     user_id
+    //   }
+    // })
+    // console.log("post api user", user);
 
     try {
       const recipePost = new this.store.Recipe(recipePostData);
-      recipePost.userId = user.id
+      recipePost.user_id = user_id
       const recipeVal = await recipePost.save();
       
       const { dataValues: { id }} = recipeVal;
@@ -59,15 +59,15 @@ class ContentAPI extends DataSource {
 
     const { user_id } = this.context.user;
 
-    const { dataValues: user } = await this.store.User.findOne({
-      where: {
-        user_id
-      }
-    })
+    // const { dataValues: user } = await this.store.User.findOne({
+    //   where: {
+    //     user_id
+    //   }
+    // })
 
     try {
       const tips = new this.store.Tips(tipsData)
-      tips.userId = user.id
+      tips.user_id = user_id
       const tipsVal = await tips.save()
 
       const { dataValues: { id }} = tipsVal;
@@ -92,15 +92,15 @@ class ContentAPI extends DataSource {
 
     const { user_id } = this.context.user;
 
-    const { dataValues: user } = await this.store.User.findOne({
-      where: {
-        user_id
-      }
-    })
+    // const { dataValues: user } = await this.store.User.findOne({
+    //   where: {
+    //     user_id
+    //   }
+    // })
 
     try {
       const post = new this.store.Post(postData)
-      post.userId = user.id
+      post.user_id = user_id
       const postVal = await post.save()
       const { dataValues: { id } } = postVal;
 

@@ -15,6 +15,7 @@ class UserAPI extends DataSource {
     }
 
     async createOrFindUser(userData) {
+        console.log(userData)
         const { user_id, email, username } = userData;
         try {
             const user = await this.store.User.findOne({

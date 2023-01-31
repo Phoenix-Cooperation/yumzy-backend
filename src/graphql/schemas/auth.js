@@ -25,7 +25,6 @@ export default gql`
     }
     
     type User {
-        id: Int!
         username: String!
         email: String!
         user_id: String!
