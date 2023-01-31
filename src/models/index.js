@@ -89,14 +89,14 @@ export const createStore = () => {
 
     const ContentReact = db.define('contentReact', 
         ContentReactModel,
-        {
-            indexes: [
-                {
-                    unique: true,
-                    fields: ['contentId']
-                }
-            ]
-        }
+        // {
+        //     indexes: [
+        //         {
+        //             unique: true,
+        //             fields: ['contentId']
+        //         }
+        //     ]
+        // }
     )
 
     // User.hasMany(ContentReact)

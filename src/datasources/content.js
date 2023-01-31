@@ -295,6 +295,39 @@ class ContentAPI extends DataSource {
     }
   }
 
+
+  async getSingleRecipeById(id) {
+    try {
+      // const { dataValues: recipe } = await this.store.Recipe.findByPk(id)
+      const data = await this.store.Recipe.findByPk(id);
+      // console.log(data.dataValues)
+      return data.dataValues
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async getSinglePostById(id) {
+    try {
+      const data = await this.store.Post.findByPk(id)
+      return data.dataValues
+    } catch (error) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async getSingleTipsById(id) {
+    try {
+      const data = await this.store.Tips.findByPk(id)
+      return data.dataValues
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
   async reactToRecipe(id) {
     try {
       let contentData = await this.getSingleRecipeById(id);
@@ -370,50 +403,8 @@ class ContentAPI extends DataSource {
     }
   }
 
-  async getSingleRecipeById(id) {
-    try {
-      // const { dataValues: recipe } = await this.store.Recipe.findByPk(id)
-      const data = await this.store.Recipe.findByPk(id);
-      // console.log(data.dataValues)
-      return data.dataValues
-    } catch (err) {
-      error({ badge: true, message: err.message })
-      throw new Error(err.message)
-    }
-  }
+  
 
-  async getSinglePostById(id) {
-    try {
-      const data = await this.store.Post.findByPk(id)
-      return data.dataValues
-    } catch (error) {
-      error({ badge: true, message: err.message })
-      throw new Error(err.message)
-    }
-  }
-
-  async getSingleTipsById(id) {
-    try {
-      const data = await this.store.Tips.findByPk(id)
-      return data.dataValues
-    } catch (err) {
-      error({ badge: true, message: err.message })
-      throw new Error(err.message)
-
-  async reactToTips(id) {
-    try {
-      let contentData = await this.getSingleTipsById(id);
-
-      contentData.reactCount = contentData.reactCount - 1;
-      await this.store.Tips.update(contentData, {
-        where: { id }
-      })
-
-    } catch (err) {
-      error({ badge: true, message: err.message })
-      throw new Error(err.message)
-    }
-  }
 
   async reactToContent(id) {
     if (!this.context.user) {
@@ -449,6 +440,10 @@ class ContentAPI extends DataSource {
       console.log(err)
     }
   }
+
+
+
+  
 
   async unReactToContent(id) {
     if (!this.context.user) {
@@ -488,6 +483,9 @@ class ContentAPI extends DataSource {
       
     }
   }
+
+
+
 }
 
 export default ContentAPI;
