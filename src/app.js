@@ -13,6 +13,7 @@ import UserAPI from "./datasources/user.js";
 import ContentAPI from "./datasources/content.js";
 import RecipeAPI from './datasources/get/recipe.js';
 import TipAPI from './datasources/get/tip.js';
+import CommentAPI from './datasources/comment.js';
 import PostContentAPI from "./datasources/get/PostContent.js";
 
 const {error, success} = console;
@@ -29,6 +30,7 @@ let store = createStore();
 const dataSources = () => ({
     UserAPI: new UserAPI({store}),
     ContentAPI: new ContentAPI({store}),
+    CommentAPI: new CommentAPI({store}),
     RecipeAPI: new RecipeAPI({store}),
     TipAPI: new TipAPI({store}),
     PostContentAPI: new PostContentAPI({store}),

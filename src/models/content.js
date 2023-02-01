@@ -84,6 +84,7 @@ export const PostModel = {
 export const ContentDetailModel = {
     contentId: {
         type: DataTypes.UUID,
+        primaryKey: true,
     }, 
     contentType: {
         type: sequelize.STRING
