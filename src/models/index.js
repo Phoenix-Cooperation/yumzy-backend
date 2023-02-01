@@ -115,7 +115,7 @@ export const createStore = () => {
 
     const Comment = db.define('comment', CommentModel)
 
-    ContentDetail.hasMany(Tips, {
+    ContentDetail.hasMany(Comment, {
         foreignKey: 'contentId'
     })
     Comment.belongsTo(ContentDetail, {
