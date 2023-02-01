@@ -21,7 +21,16 @@ export default {
     },
     getRecipeById: async (_, { id }, { dataSources }) => {
       const recipe = await dataSources.ContentAPI.getSingleRecipeById(id);
-      return recipe
+      let comments = await dataSources.CommentAPI.getComments(recipe.id);
+
+      comments = await Promise.all(comments.map(async (comment) => {
+        const { user: { user_id }, user, ...vals} = comment;
+        const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
+        return {...vals, user: { ...user, photoURL }} 
+      }))
+
+
+      return {...recipe, comments}
     },
     getPostById: async (_, { id }, { dataSources }) => {
       const post = await dataSources.ContentAPI.getSinglePostById(id);
