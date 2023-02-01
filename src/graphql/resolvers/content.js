@@ -34,11 +34,27 @@ export default {
     },
     getPostById: async (_, { id }, { dataSources }) => {
       const post = await dataSources.ContentAPI.getSinglePostById(id);
-      return post;
+      let comments = await dataSources.CommentAPI.getComments(recipe.id);
+
+      comments = await Promise.all(comments.map(async (comment) => {
+        const { user: { user_id }, user, ...vals} = comment;
+        const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
+        return {...vals, user: { ...user, photoURL }} 
+      }))
+
+      return {...post, comments};
     },
     getTipsById: async (_, { id }, { dataSources }) => {
       const tips = await dataSources.ContentAPI.getSingleTipsById(id);
-      return tips;
+      let comments = await dataSources.CommentAPI.getComments(recipe.id);
+
+      comments = await Promise.all(comments.map(async (comment) => {
+        const { user: { user_id }, user, ...vals} = comment;
+        const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
+        return {...vals, user: { ...user, photoURL }} 
+      }))
+
+      return {...tips, comments};
     },
   },
   Mutation: {
