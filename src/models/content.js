@@ -14,7 +14,7 @@ export const RecipeModel = {
         type: DataTypes.ARRAY(sequelize.STRING)
     },
     description: {
-        type: sequelize.STRING
+        type: sequelize.TEXT
     },
     ingredients: {
         type: DataTypes.ARRAY(sequelize.STRING)
@@ -26,7 +26,7 @@ export const RecipeModel = {
         type: DataTypes.ARRAY(sequelize.STRING)
     },
     method: {
-        type: sequelize.STRING,
+        type: sequelize.TEXT,
     },
     reactCount: {
         type: sequelize.INTEGER
@@ -44,7 +44,7 @@ export const TipsModel = {
         type: sequelize.STRING
     },
     tips: {
-        type: sequelize.STRING
+        type: sequelize.TEXT
     },
     images: {
         type: DataTypes.ARRAY(sequelize.STRING)
@@ -68,7 +68,7 @@ export const PostModel = {
         type: sequelize.STRING
     },
     description: {
-        type: sequelize.STRING
+        type: sequelize.TEXT
     },
     images: {
         type: DataTypes.ARRAY(sequelize.STRING)
