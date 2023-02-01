@@ -237,7 +237,7 @@ class ContentAPI extends DataSource {
       content = await Promise.all(content.map(async (data) => {
         const { id, ...vals } = data;
         const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
-        return { ...vals, currentUserReacted }
+        return { id, ...vals, currentUserReacted }
       }))
       content = [...content].sort(() => Math.random() - 0.5);
 
