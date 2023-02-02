@@ -36,6 +36,7 @@ export default gql`
         time: String
         tips: String
         tags: [String]
+        commentCount: Int
         user: User
         reactCount: Int
         currentUserReacted: Boolean
