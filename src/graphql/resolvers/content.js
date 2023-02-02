@@ -31,8 +31,9 @@ export default {
         return {...vals, user: { ...user, photoURL }} 
       }))
 
+      const commentCount = comments.length;
 
-      return {...recipe, comments}
+      return {...recipe, comments, commentCount }
     },
     getPostById: async (_, { id }, { dataSources }) => {
       const post = await dataSources.ContentAPI.getSinglePostById(id);
@@ -44,7 +45,9 @@ export default {
         return {...vals, user: { ...user, photoURL }} 
       }))
 
-      return {...post, comments};
+      const commentCount = comments.length
+
+      return {...post, comments, commentCount };
     },
     getTipsById: async (_, { id }, { dataSources }) => {
       const tips = await dataSources.ContentAPI.getSingleTipsById(id);
@@ -56,7 +59,8 @@ export default {
         return {...vals, user: { ...user, photoURL }} 
       }))
 
-      return {...tips, comments};
+      const commentCount = comments.length
+      return {...tips, comments, commentCount };
     },
   },
   Mutation: {
