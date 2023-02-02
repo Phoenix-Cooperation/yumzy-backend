@@ -52,6 +52,7 @@ export default gql`
         time: String!
         tags: [String]
         comments: [Comment!]
+        commentCount: Int
         reactCount: Int
         currentUserReacted: Boolean
     }
@@ -72,6 +73,7 @@ export default gql`
         tips: String!
         images: [String]
         tags: [String]
+        commentCount: Int
         reactCount: Int
         comments: [Comment!]
         currentUserReacted: Boolean
@@ -92,6 +94,7 @@ export default gql`
         tags: [String]
         reactCount: Int
         comments: [Comment!]
+        commentCount: Int
         currentUserReact: Boolean
     }
 
