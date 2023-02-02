@@ -9,9 +9,11 @@ export default {
         let { content, hasMore }= await dataSources.ContentAPI.getContent({ pageSize, after })
 
         content = await Promise.all(content.map(async (data) => {
-          const { user: { user_id }, user,  ...val } = data
+          const { user: { user_id }, user, id,  ...val } = data
           const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
-          return {...val, user: { ...user, photoURL } }
+
+          const commentCount = await dataSources.CommentAPI.getCommentCountForPost(id)
+          return {...val, id,  user: { ...user, photoURL }, commentCount }
         }))
 
         return { content, hasMore }
