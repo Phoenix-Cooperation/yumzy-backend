@@ -1,8 +1,8 @@
 const dbConfig = {
-    HOST: "localhost",
-    USER: "postgres",
-    PASSWORD: "postgres",
-    DB: "yumzy_foods",
+    HOST: process.env.RDS_DATABASE_HOST,
+    USER: process.env.RDS_DATABASE_USER,
+    PASSWORD: process.env.RDS_DATABASE_PASSWORD,
+    DB: process.env.RDS_DATABASE_DB,
     dialect: "postgres",
     pool: {
         max: 5,
