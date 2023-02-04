@@ -1,3 +1,4 @@
+import "dotenv/config.js"
 import console from 'consola';
 import express from "express";
 import {ApolloServer, gql, ApolloError, AuthenticationError} from "apollo-server-express";
@@ -6,7 +7,7 @@ import {typeDefs, resolvers} from "./graphql/index.js";
 // import initializeDB from "./app/middleware/initializeDB.js";
 import http from "http";
 import admin from "./config/firebase/firebase-config.js";
-import {PORT, IN_PROD} from "./config/constant/index.js";
+// import {PORT} from "./config/constant/index.js";
 import * as AppModels from "./models/mainModels.js";
 import {createStore} from "./models/index.js";
 import UserAPI from "./datasources/user.js";
@@ -23,7 +24,7 @@ app.use(express.urlencoded({extended: true}));
 
 // initializeDB().then();
 // const store = createStore();
-
+const PORT = process.env.PORT;
 
 let store = createStore();
 
