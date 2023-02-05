@@ -10,6 +10,7 @@ import {PORT, IN_PROD} from "./config/constant/index.js";
 import * as AppModels from "./models/mainModels.js";
 import {createStore} from "./models/index.js";
 import UserAPI from "./datasources/user.js";
+import NotificationAPI from "./datasources/notification.js";
 import ContentAPI from "./datasources/content.js";
 import RecipeAPI from './datasources/get/recipe.js';
 import TipAPI from './datasources/get/tip.js';
@@ -29,6 +30,7 @@ let store = createStore();
 
 const dataSources = () => ({
     UserAPI: new UserAPI({store}),
+    NotificationAPI: new NotificationAPI({store}),
     ContentAPI: new ContentAPI({store}),
     CommentAPI: new CommentAPI({store}),
     RecipeAPI: new RecipeAPI({store}),
