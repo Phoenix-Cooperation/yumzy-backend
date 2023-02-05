@@ -54,6 +54,10 @@ export default {
 
             return {...tips, comments};
         },
+
+        getContentSavedByUserId: async (_, {id}, {dataSources}) => {
+            return await dataSources.ContentAPI.getContentSavedByUserId();
+        },
     },
     Mutation: {
         createRecipe: async (_, {recipeInput}, {dataSources}) => {
@@ -91,6 +95,14 @@ export default {
         unReactToContent: async (_, {contentId}, {dataSources}) => {
             const message = await dataSources.ContentAPI.unReactToContent(contentId);
             return message;
-        }
+        },
+
+        contentSaved: async (_, {savedInput}, {dataSources}) => {
+            try {
+                return await dataSources.ContentAPI.contentSaved(savedInput);
+            } catch (error) {
+                throw new ErrorResponse({message: `Cannot save Content: ${error.message}`})
+            }
+        },
     }
 }

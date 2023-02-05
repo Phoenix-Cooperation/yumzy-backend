@@ -8,7 +8,7 @@ import {
     TipsModel,
     PostModel,
     ContentDetailModel,
-    ContentReactModel,
+    ContentReactModel, SaveContentModel,
 } from "./content.js";
 import {CommentModel} from './comment.js';
 import {NotificationModel} from "./notification.js";
@@ -142,6 +142,20 @@ export const createStore = () => {
         foreignKey: 'user_id'
     })
 
+    const SavedContent = db.define('savedContent', SaveContentModel)
+    ContentDetail.hasMany(SavedContent, {
+        foreignKey: 'contentId'
+    })
+    SavedContent.belongsTo(ContentDetail, {
+        foreignKey: 'contentId'
+    })
+    User.hasMany(SavedContent, {
+        foreignKey: 'user_id'
+    })
+    SavedContent.belongsTo(User, {
+        foreignKey: 'user_id'
+    })
+
     try {
         // db.sync({ force : true })
         db.sync().then()
@@ -152,7 +166,14 @@ export const createStore = () => {
 
 
     // const ROLES = ["user", "admin", "moderator"];
-    return {db, User, Role, Recipe, Tips, Post, ContentDetail, ContentReact, Comment, Notification}
+    return {
+        db, User,
+        Role, Recipe,
+        Tips, Post,
+        ContentDetail, ContentReact,
+        Comment, Notification,
+        SavedContent
+    }
 }
 
     
