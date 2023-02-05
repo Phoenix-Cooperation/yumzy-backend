@@ -50,8 +50,6 @@ class CommentAPI extends DataSource {
         return { ...vals, user: userInfo }
       })
 
-      console.log(comments)
-
       return comments
     } catch (err) {
       error({ badge: true, message: err.message })
