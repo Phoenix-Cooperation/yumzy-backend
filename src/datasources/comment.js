@@ -50,12 +50,26 @@ class CommentAPI extends DataSource {
         return { ...vals, user: userInfo }
       })
 
-      console.log(comments)
-
       return comments
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
+    }
+  }
+
+  async getCommentCountForPost(contentId) {
+    try {
+      const { count } = await this.store.Comment.findAndCountAll({
+        where: {
+          contentId
+        }
+      })
+
+      return count;
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+
     }
   }
 }
