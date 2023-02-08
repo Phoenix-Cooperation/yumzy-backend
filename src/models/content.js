@@ -106,13 +106,6 @@ export const SaveContentModel = {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
-    user_id: {
-        type: sequelize.STRING
-    },
-    contentId: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-    },
     contentType: {
         type: sequelize.STRING
     }

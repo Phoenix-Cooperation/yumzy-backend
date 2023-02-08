@@ -6,12 +6,6 @@ export const NotificationModel = {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
-    contentID: {
-        type: DataTypes.UUID,
-    },
-    user_id: {
-        type: sequelize.STRING,
-    },
     message: {
         type: sequelize.TEXT
     },

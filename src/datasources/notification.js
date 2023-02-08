@@ -1,5 +1,9 @@
 import {DataSource} from "apollo-datasource";
 import {ErrorResponse} from "../util/errorHandler/errorResponse.js";
+import {PubSub} from "graphql-subscriptions";
+import console from 'consola';
+const {error, success} = console;
+const pubsub = new PubSub();
 
 class NotificationAPI extends DataSource {
     constructor({store}) {
@@ -22,10 +26,17 @@ class NotificationAPI extends DataSource {
             throw new Error('Error! User is not logged in');
         }
         try {
-            const notify = new this.store.Notification(notifyData);
-            notify.user_id = user_id;
+            const notify = new this.store.NotificationRepo(notifyData);
             const notifyResponse = await notify.save();
             const {dataValues: {id, contentID, user_id, message, status}} = notifyResponse;
+            await pubsub.publish('POST_CREATED', {
+                contentCreateSubscription: {
+                    id: id,
+                    contentId: contentID,
+                    message: message,
+                    status: status
+                }
+            });
             success({badge: true, message: "Notification created!"});
             return notifyResponse.dataValues;
         } catch (err) {
@@ -34,6 +45,30 @@ class NotificationAPI extends DataSource {
         }
     }
 
+    /**
+     * @apiNote: get notification by user id
+     * */
+    async getNotification() {
+        const {user_id} = this.context.user;
+        if (!this.context.user) {
+            error({badge: true, message: 'User not logged in'});
+            throw new Error('Error! User is not logged in');
+        }
+        try {
+            const {dataValues: notifications} = await this.store
+                .NotificationRepo
+                .findAll({
+                    where: {
+                        user_id
+                    },
+                    order: [['createdAt', 'DESC']],
+                })
+            return notifications;
+        } catch (err) {
+            error({badge: false, message: err.message})
+            throw new ErrorResponse({message: `Cannot create notification: ${error.message}`})
+        }
+    }
 }
 
 export default NotificationAPI;

@@ -81,6 +81,13 @@ export default {
         createPost: async (_, {postInput}, {dataSources}) => {
             try {
                 const post = await dataSources.ContentAPI.createPost(postInput)
+                const notifyData = ({
+                    contentId: post.id,
+                    user_id: post.user_id,
+                    message: 'POST_CREATED',
+                    status: 'U',
+                });
+                const notify = await dataSources.NotificationAPI.createNotification(notifyData);
                 return post;
             } catch (error) {
                 throw new ErrorResponse({message: `Cannot create post: ${error.message}`})

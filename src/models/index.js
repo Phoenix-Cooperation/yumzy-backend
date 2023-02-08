@@ -128,17 +128,17 @@ export const createStore = () => {
         foreignKey: 'user_id'
     })
 
-    const Notification = db.define('notification', NotificationModel)
-    Post.hasMany(Notification, {
+    const NotificationRepo = db.define('notification', NotificationModel)
+    Post.hasMany(NotificationRepo, {
         foreignKey: 'contentId'
     })
-    Notification.belongsTo(Post, {
-        foreignKey: 'id'
+    NotificationRepo.belongsTo(Post, {
+        foreignKey: 'contentId'
     })
-    User.hasMany(Notification, {
+    User.hasMany(NotificationRepo, {
         foreignKey: 'user_id'
     })
-    Notification.belongsTo(User, {
+    NotificationRepo.belongsTo(User, {
         foreignKey: 'user_id'
     })
 
@@ -171,7 +171,7 @@ export const createStore = () => {
         Role, Recipe,
         Tips, Post,
         ContentDetail, ContentReact,
-        Comment, Notification,
+        Comment, NotificationRepo,
         SavedContent
     }
 }
