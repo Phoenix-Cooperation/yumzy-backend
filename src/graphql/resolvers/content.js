@@ -1,4 +1,8 @@
 import {ErrorResponse} from "../../util/errorHandler/errorResponse.js";
+import {PubSub} from "graphql-subscriptions";
+import console from 'consola';
+const {error, success} = console;
+const pubsub = new PubSub();
 
 export default {
     Query: {
@@ -87,7 +91,16 @@ export default {
                     message: 'POST_CREATED',
                     status: 'U',
                 });
-                const notify = await dataSources.NotificationAPI.createNotification(notifyData);
+                const {id, contentID, user_id, message, status} = await dataSources.NotificationAPI.createNotification(notifyData);
+                await pubsub.publish('POST_CREATED', {
+                    contentCreateSubscription: {
+                        id: id,
+                        contentId: contentID,
+                        message: message,
+                        status: status
+                    }
+                });
+                success({badge: true, message: "Notification created!"});
                 return post;
             } catch (error) {
                 throw new ErrorResponse({message: `Cannot create post: ${error.message}`})

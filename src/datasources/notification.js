@@ -29,15 +29,15 @@ class NotificationAPI extends DataSource {
             const notify = new this.store.NotificationRepo(notifyData);
             const notifyResponse = await notify.save();
             const {dataValues: {id, contentID, user_id, message, status}} = notifyResponse;
-            await pubsub.publish('POST_CREATED', {
-                contentCreateSubscription: {
-                    id: id,
-                    contentId: contentID,
-                    message: message,
-                    status: status
-                }
-            });
-            success({badge: true, message: "Notification created!"});
+            // await pubsub.publish('POST_CREATED', {
+            //     contentCreateSubscription: {
+            //         id: id,
+            //         contentId: contentID,
+            //         message: message,
+            //         status: status
+            //     }
+            // });
+            // success({badge: true, message: "Notification created!"});
             return notifyResponse.dataValues;
         } catch (err) {
             error({badge: false, message: err.message})
