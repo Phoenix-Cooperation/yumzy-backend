@@ -2,6 +2,8 @@ import {DataSource} from "apollo-datasource";
 import {ErrorResponse} from "../util/errorHandler/errorResponse.js";
 import {PubSub} from "graphql-subscriptions";
 import console from 'consola';
+import {NotificationModel} from "../models/notification.js";
+
 const {error, success} = console;
 const pubsub = new PubSub();
 
@@ -55,14 +57,20 @@ class NotificationAPI extends DataSource {
             throw new Error('Error! User is not logged in');
         }
         try {
-            const {dataValues: notifications} = await this.store
-                .NotificationRepo
-                .findAll({
-                    where: {
-                        user_id
-                    },
-                    order: [['createdAt', 'DESC']],
-                })
+            const rows = await this.store.NotificationRepo.findAll({
+                where: {
+                    user_id: user_id
+                },
+                include: {
+                    model: this.store.Post,
+                },
+                order: [['createdAt', 'DESC']],
+            });
+            const notifications = rows.map((row) => {
+                const {id, message, status, contentID, user_id} = row.dataValues;
+                return row.dataValues;
+            });
+            console.log(notifications);
             return notifications;
         } catch (err) {
             error({badge: false, message: err.message})

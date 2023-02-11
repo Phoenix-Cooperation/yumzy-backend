@@ -12,12 +12,12 @@ export default {
                 }),
         }
     },
-    //
-    // Query: {
-    //     getNotification: async (_, {}, {dataSources}) => {
-    //         return await dataSources.NotificationAPI.getNotification();
-    //     },
-    // },
+
+    Query: {
+        getNotification: async (_, {}, {dataSources}) => {
+            return await dataSources.NotificationAPI.getNotification();
+        },
+    },
     // Mutation: {
     //     createNotification: async (_, {notifyInput}, {dataSources}) => {
     //         try {
