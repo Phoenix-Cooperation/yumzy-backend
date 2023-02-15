@@ -64,7 +64,7 @@ async function startApolloServer() {
                             })
                             .catch((err) => {
                                 error({badge: true, message: err})
-                                throw new AuthenticationError(err.message);
+                                // throw new AuthenticationError(err.message);
                             })
 
                     }
