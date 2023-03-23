@@ -1,28 +1,27 @@
 import {Sequelize} from 'sequelize';
 import console from 'consola';
-
 import dbConfig from '../config/db/dbConfig.js';
 import UserModel from "./user.js";
 import RoleModel from "./role.js";
-import { 
-    RecipeModel, 
-    TipsModel, 
-    PostModel, 
-    ContentDetailModel, 
-    ContentReactModel,
+import {
+    RecipeModel,
+    TipsModel,
+    PostModel,
+    ContentDetailModel,
+    ContentReactModel, SaveContentModel,
 } from "./content.js";
-
-import { CommentModel } from './comment.js';
+import {CommentModel} from './comment.js';
+import {NotificationModel} from "./notification.js";
 
 const {success, error} = console;
 
 export const paginateResults = ({
-                                      after: cursor,
-                                      pageSize = 20,
-                                      results,
-                                      // can pass in a function to calculate an item's cursor
-                                      getCursor = () => null,
-                                  }) => {
+                                    after: cursor,
+                                    pageSize = 20,
+                                    results,
+                                    // can pass in a function to calculate an item's cursor
+                                    getCursor = () => null,
+                                }) => {
     if (pageSize < 1) return [];
 
     if (!cursor) return results.slice(0, pageSize);
@@ -98,10 +97,10 @@ export const createStore = () => {
     Tips.belongsTo(User, {
         foreignKey: 'user_id'
     })
-    
+
     const ContentDetail = db.define('contentDetail', ContentDetailModel)
 
-    const ContentReact = db.define('contentReact', 
+    const ContentReact = db.define('contentReact',
         ContentReactModel,
         // {
         //     indexes: [
@@ -129,19 +128,52 @@ export const createStore = () => {
         foreignKey: 'user_id'
     })
 
-   
+    const NotificationRepo = db.define('notification', NotificationModel)
+    Post.hasMany(NotificationRepo, {
+        foreignKey: 'contentId'
+    })
+    NotificationRepo.belongsTo(Post, {
+        foreignKey: 'contentId'
+    })
+    User.hasMany(NotificationRepo, {
+        foreignKey: 'user_id'
+    })
+    NotificationRepo.belongsTo(User, {
+        foreignKey: 'user_id'
+    })
+
+    const SavedContent = db.define('savedContent', SaveContentModel)
+    ContentDetail.hasMany(SavedContent, {
+        foreignKey: 'contentId'
+    })
+    SavedContent.belongsTo(ContentDetail, {
+        foreignKey: 'contentId'
+    })
+    User.hasMany(SavedContent, {
+        foreignKey: 'user_id'
+    })
+    SavedContent.belongsTo(User, {
+        foreignKey: 'user_id'
+    })
 
     try {
         // db.sync({ force : true })
-        db.sync()
-        success({badge: true, message: "DB Sync successfull"})
+        db.sync().then()
+        success({badge: true, message: "DB Sync successful"})
     } catch (err) {
         error({badge: true, message: "DB Sync failed"})
     }
 
 
     // const ROLES = ["user", "admin", "moderator"];
-    return {db, User, Role, Recipe, Tips, Post, ContentDetail, ContentReact, Comment}
+    return {
+        db, User,
+        Role, Recipe,
+        Tips, Post,
+        ContentDetail, ContentReact,
+        Comment, NotificationRepo,
+        SavedContent
+    }
 }
 
     

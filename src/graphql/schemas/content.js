@@ -8,6 +8,7 @@ export default gql`
         createPost(postInput: PostInput!): Post
         reactToContent(contentId: String!): messageResponse
         unReactToContent(contentId: String!): messageResponse
+        contentSaved(contentId: SaveContentInput!): messageResponse
     }
 
     extend type Query {
@@ -15,6 +16,7 @@ export default gql`
         getRecipeById(id: String!): Recipe
         getPostById(id: String!): Post
         getTipsById(id: String!): Tips
+        getContentSavedByUserId(userId: String!):[SaveContent]
     }
 
     type messageResponse {
@@ -109,6 +111,20 @@ export default gql`
         title: String!
         content: String!
         createdAt: String!
+    }
+    input SaveContentInput {
+        id: String!
+        contentId: String!
+        contentType: String!
+        user_id: String!
+        tags: String!
+    }
+    type SaveContent{
+        id: String!
+        contentId: String!
+        contentType: String!
+        user_id: String!
+        tags: String!
     }
 `;
 
