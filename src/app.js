@@ -16,6 +16,7 @@ import RecipeAPI from './datasources/get/recipe.js';
 import TipAPI from './datasources/get/tip.js';
 import CommentAPI from './datasources/comment.js';
 import PostContentAPI from "./datasources/get/PostContent.js";
+import RedisCache from "./caching/index.js";
 
 const {error, success} = console;
 
@@ -35,6 +36,7 @@ const dataSources = () => ({
     RecipeAPI: new RecipeAPI({store}),
     TipAPI: new TipAPI({store}),
     PostContentAPI: new PostContentAPI({store}),
+    RedisCache: new RedisCache(),
 });
 
 async function startApolloServer() {
