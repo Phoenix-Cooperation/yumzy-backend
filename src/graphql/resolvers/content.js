@@ -4,7 +4,15 @@ import { ErrorResponse } from "../../util/errorHandler/errorResponse.js";
 
 export default {
   Query: {
-    getContent: async (_, {pageSize = 20, after = 0 }, { dataSources }) => {
+    getContent: async (_, {pageSize = 20, after = 0 }, { user: { user_id }, dataSources }) => {
+
+      const cachedContent = await dataSources.RedisCache.getContentCache(user_id, pageSize, after)
+      // console.log(cachedContent)
+      if (cachedContent) {
+        console.log("returning content from cache")
+        return cachedContent;
+      }
+
       try {
         let { content, hasMore }= await dataSources.ContentAPI.getContent({ pageSize, after })
 
@@ -15,6 +23,8 @@ export default {
           const commentCount = await dataSources.CommentAPI.getCommentCountForPost(id)
           return {...val, id,  user: { ...user, photoURL }, commentCount }
         }))
+
+        dataSources.RedisCache.setContentCache(user_id, pageSize, after, { content, hasMore })
 
         return { content, hasMore }
       } catch (error) {
