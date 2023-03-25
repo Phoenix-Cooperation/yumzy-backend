@@ -526,6 +526,39 @@ class ContentAPI extends DataSource {
         }
     }
 
+    /**
+     * @apiNote: delete saved content by content id and user id
+     * */
+    async deleteSavedContent(contentId) {
+        const {user_id} = this.context.user;
+        if (!this.context.user) {
+            error({badge: true, message: 'User not logged in'})
+            throw new Error('Error! User is not logged in');
+        }
+        try {
+            const {dataValues: savedContents} = await this.store
+                .SavedContent
+                .findOne({
+                    where: {
+                        contentId,
+                        user_id
+                    }
+                }).then(data => {
+                    if (data) {
+                        data.destroy();
+                        success({badge: true, message: 'deleteSavedContent{} -> Content delete success'})
+                        return 'Content delete success';
+                    } else {
+                        error({badge: true, message: 'deleteSavedContent{} -> Invalid data'})
+                        return 'Invalid data';
+                    }
+                })
+        } catch (err) {
+            error({badge: true, message: err.message})
+            throw new Error(err.message)
+        }
+    }
+
 }
 
 export default ContentAPI;
