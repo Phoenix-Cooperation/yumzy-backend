@@ -14,7 +14,7 @@ export default gql`
 
     extend type Query {
         getContent(pageSize: Int!, after: Int): getContentResponse
-        getContentUserId(pageSize: Int!, after: Int): getContentResponse
+        getContentUserId: getContentResponse
         getRecipeById(id: String!): Recipe
         getPostById(id: String!): Post
         getTipsById(id: String!): Tips
@@ -27,11 +27,8 @@ export default gql`
     }
 
     input SaveContentInput {
-        id: String!
         contentId: String!
         contentType: String!
-        user_id: String!
-        tags: String!
     }
 
     type SaveContent{

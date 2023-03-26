@@ -1,6 +1,4 @@
-import { validateSDL } from "graphql/validation/validate.js";
-import { ErrorResponse } from "../../util/errorHandler/errorResponse.js";
-
+import {ErrorResponse} from "../../util/errorHandler/errorResponse.js";
 
 export default {
   Query: {
@@ -90,6 +88,25 @@ export default {
       const commentCount = comments.length
       return { ...tips, comments, commentCount };
     },
+    searchContentSaved: async (_, { contentId }, { dataSources }) => {
+      return await dataSources.ContentAPI.searchContentSaved(contentId);
+    },
+    getContentUserId: async (_, {}, { user: { user_id }, dataSources }) => {
+      try {
+        let { content, hasMore }= await dataSources.ContentAPI.getContentByUserId();
+
+        content = await Promise.all(content.map(async (data) => {
+          const { user: { user_id }, user, id,  ...val } = data
+          const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
+
+          const commentCount = await dataSources.CommentAPI.getCommentCountForPost(id)
+          return {...val, id,  user: { ...user, photoURL }, commentCount }
+        }));
+        return { content, hasMore }
+      } catch (error) {
+        throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})
+      }
+    },
   },
   Mutation: {
     createRecipe: async (_, { recipeInput }, { dataSources }) => {
@@ -147,6 +164,20 @@ export default {
         }
       }
       return message;
+    },
+    contentSaved: async (_, { contentSaveInput }, { dataSources }) => {
+      try {
+        return await dataSources.ContentAPI.contentSaved(contentSaveInput);
+      } catch (error) {
+        throw new ErrorResponse({ message: `Cannot save content: ${error.message}`})
+      }
+    },
+    deleteContentById: async (_, { contentID }, { dataSources }) => {
+      try {
+        return await dataSources.ContentAPI.deleteContentById(contentID);
+      } catch (error) {
+        throw new ErrorResponse({ message: `Cannot save content: ${error.message}`})
+      }
     }
   }
 }
