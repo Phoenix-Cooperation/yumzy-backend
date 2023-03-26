@@ -336,6 +336,36 @@ class ContentAPI extends DataSource {
   }
 
 
+  async reactToRecipe(id) {
+    try {
+      let contentData = await this.getSingleRecipeById(id);
+      
+      contentData.reactCount = contentData.reactCount + 1;
+      await this.store.Recipe.update(contentData, {
+        where: { id }
+      })
+      
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async unReactToRecipe(id) {
+    try {
+      let contentData = await this.getSingleRecipeById(id);
+      
+      contentData.reactCount = contentData.reactCount - 1;
+      await this.store.Recipe.update(contentData, {
+        where: { id }
+      })
+      
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
   async reactToPost(id) {
     try {
       let contentData = await this.getSinglePostById(id);
@@ -344,7 +374,7 @@ class ContentAPI extends DataSource {
       await this.store.Post.update(contentData, {
         where: { id }
       })
-      // return contentData
+      
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
@@ -359,37 +389,7 @@ class ContentAPI extends DataSource {
       await this.store.Post.update(contentData, {
         where: { id }
       })
-      // return contentData
-    } catch (err) {
-      error({ badge: true, message: err.message })
-      throw new Error(err.message)
-    }
-  }
-
-  async reactToPost(id) {
-    try {
-      let contentData = await this.getSinglePostById(id);
-
-      contentData.reactCount = contentData.reactCount + 1;
-      await this.store.Tips.update(contentData, {
-        where: { id }
-      })
-      // return contentData
-    } catch (err) {
-      error({ badge: true, message: err.message })
-      throw new Error(err.message)
-    }
-  }
-
-  async unReactToPost(id) {
-    try {
-      let contentData = await this.getSinglePostById(id);
-
-      contentData.reactCount = contentData.reactCount - 1;
-      await this.store.Post.update(contentData, {
-        where: { id }
-      })
-
+      
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
@@ -411,24 +411,36 @@ class ContentAPI extends DataSource {
     }
   }
 
+  
+
+
   async reactToContent(id) {
     if (!this.context.user) {
-      error({ badge: true, message: 'User not logged in' })
+      error({badge: true, message: 'User not logged in'})
       throw new Error('Error! User is not logged in');
     }
 
     const { user_id } = this.context.user;
 
     try {
+      // const reactedBefore = await this.store.ContentReact.findOne({
+      //   where: {
+      //     contentId: id,
+      //     user_id
+      //   }
+      // })
+
+      // if (reactedBefore !== null) return { message: 'Already reacted' }
+
       const vals = await this.store.ContentDetail.findOne({
         where: {
-          contentId: id
+          contentId : id
         }
       })
-
+      
       const { dataValues: ContentDetail } = vals;
       const { contentType } = ContentDetail;
-
+      
       if (contentType === "recipe") {
         await this.reactToRecipe(id)
       } else if (contentType === "post") {
@@ -437,26 +449,42 @@ class ContentAPI extends DataSource {
         await this.reactToTips(id);
       }
 
-      const contentReact = await new this.store.ContentReact({ contentId: id, user_id })
+      const contentReact= await new this.store.ContentReact({ contentId: id, user_id })
       await contentReact.save()
       return { message: "success" }
-    } catch (err) {
+    }
+    catch (err) {
       console.log(err)
+      error({ badge: true, message: "error" })
+      throw new Error(err)
     }
   }
 
+
+
+  
+
   async unReactToContent(id) {
     if (!this.context.user) {
-      error({ badge: true, message: 'User not logged in' })
+      error({badge: true, message: 'User not logged in'})
       throw new Error('Error! User is not logged in');
     }
 
     const { user_id } = this.context.user;
 
     try {
+      // const reactedBefore = await this.store.ContentReact.findOne({
+      //   where: {
+      //     contentId: id,
+      //     user_id
+      //   }
+      // })
+
+      // if (reactedBefore === null) return { message: 'user not reacted' }
+
       const vals = await this.store.ContentDetail.findOne({
         where: {
-          contentId: id
+          contentId : id
         }
       });
 
@@ -479,8 +507,10 @@ class ContentAPI extends DataSource {
       })
 
       return { message: "success" }
-    } catch (error) {
-
+    } catch (err) {
+      console.log(err)
+      error({ badge: true, message: "error" })
+      throw new Error(err)
     }
   }
 
