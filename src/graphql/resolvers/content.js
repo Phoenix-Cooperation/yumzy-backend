@@ -1,4 +1,3 @@
-import {validateSDL} from "graphql/validation/validate.js";
 import {ErrorResponse} from "../../util/errorHandler/errorResponse.js";
 
 
@@ -26,7 +25,7 @@ export default {
           notInCacheContent = await Promise.all(notInCacheContent.map(async (data) => {
             const { user: { user_id }, user, id,  ...val } = data
             const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
-  
+
             const commentCount = await dataSources.CommentAPI.getCommentCountForPost(id)
             const temp = {...val, id,  user: { ...user, photoURL }, commentCount }
             await dataSources.RedisCache.setContentToCache(temp)
@@ -48,7 +47,7 @@ export default {
       comments = await Promise.all(comments.map(async (comment) => {
         const { user: { user_id }, user, ...vals} = comment;
         const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
-        return {...vals, user: { ...user, photoURL }} 
+        return {...vals, user: { ...user, photoURL }}
       }))
 
       const commentCount = comments.length;
@@ -62,7 +61,7 @@ export default {
       comments = await Promise.all(comments.map(async (comment) => {
         const { user: { user_id }, user, ...vals} = comment;
         const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
-        return {...vals, user: { ...user, photoURL }} 
+        return {...vals, user: { ...user, photoURL }}
       }))
 
       const commentCount = comments.length
@@ -76,11 +75,30 @@ export default {
       comments = await Promise.all(comments.map(async (comment) => {
         const { user: { user_id }, user, ...vals} = comment;
         const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
-        return {...vals, user: { ...user, photoURL }} 
+        return {...vals, user: { ...user, photoURL }}
       }))
 
       const commentCount = comments.length
       return {...tips, comments, commentCount };
+    },
+    searchContentSaved: async (_, { contentId }, { dataSources }) => {
+      return await dataSources.ContentAPI.searchContentSaved(contentId);
+    },
+    getContentUserId: async (_, {}, { user: { user_id }, dataSources }) => {
+      try {
+        let { content, hasMore }= await dataSources.ContentAPI.getContentByUserId();
+
+        content = await Promise.all(content.map(async (data) => {
+          const { user: { user_id }, user, id,  ...val } = data
+          const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
+
+          const commentCount = await dataSources.CommentAPI.getCommentCountForPost(id)
+          return {...val, id,  user: { ...user, photoURL }, commentCount }
+        }));
+        return { content, hasMore }
+      } catch (error) {
+        throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})
+      }
     },
   },
   Mutation: {
@@ -113,7 +131,7 @@ export default {
 
     reactToContent: async (_, { contentId }, { dataSources}) => {
       const message = await dataSources.ContentAPI.reactToContent(contentId);
-      
+
       if (message.message === "success") {
         const content = await dataSources.RedisCache.getSingleContent(contentId)
         if (content) {
@@ -139,6 +157,20 @@ export default {
         }
       }
       return message;
+    },
+    contentSaved: async (_, { contentSaveInput }, { dataSources }) => {
+      try {
+        return await dataSources.ContentAPI.contentSaved(contentSaveInput);
+      } catch (error) {
+        throw new ErrorResponse({ message: `Cannot save content: ${error.message}`})
+      }
+    },
+    deleteContentById: async (_, { contentID }, { dataSources }) => {
+      try {
+        return await dataSources.ContentAPI.deleteContentById(contentID);
+      } catch (error) {
+        throw new ErrorResponse({ message: `Cannot save content: ${error.message}`})
+      }
     }
   }
 }

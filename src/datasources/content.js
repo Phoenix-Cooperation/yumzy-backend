@@ -510,7 +510,7 @@ class ContentAPI extends DataSource {
     const isSaved = await this.isContentSavedByUser(saveData.contentId, user_id);
     if (!isSaved) {
       try {
-        const savedContent = new this.store.SavedContent(saveData);
+        let savedContent = new this.store.SavedContent(saveData);
         savedContent.user_id = user_id
         const savedResponse = await savedContent.save()
         const { dataValues: { id } } = savedResponse;
@@ -670,7 +670,7 @@ class ContentAPI extends DataSource {
   /**
    * @ApiNode Get content by user id
    * */
-  async getContentByUserId({ pageSize, after }) {
+  async getContentByUserId() {
 
     const { user_id } = this.context.user;
     if (!this.context.user) {
@@ -678,22 +678,26 @@ class ContentAPI extends DataSource {
       throw new Error('Error! User is not logged in');
     }
     try {
-      const allContent = await this.store.ContentDetail.findAll({
-        where: { user_id },
-        order: [['createdAt', 'DESC']],
+      const recipes = await this.store.Recipe.findAll({
+        where: {
+          user_id: user_id
+        },
+        order: [['createdAt', 'DESC']]
       });
-      const slicedContent = allContent.slice(after, after + pageSize).map(data => data.dataValues)
-      let hasMore = false;
 
-      if (slicedContent.length + after < allContent.length) hasMore = true
+      const posts = await this.store.Post.findAll({
+        where: {
+          user_id: user_id
+        },
+        order: [['createdAt', 'DESC']]
+      });
 
-      const recipeIds = slicedContent.filter(data => data?.contentType === "recipe").map(data => data?.contentId)
-      const postIds = slicedContent.filter(data => data?.contentType === "post").map(data => data.contentId)
-      const tipsIds = slicedContent.filter(data => data?.contentType === "tips").map(data => data.contentId)
-
-      const recipes = await this.getRecipesByIds({ contentIds: recipeIds })
-      const posts = await this.getPostsByIds({ contentIds: postIds })
-      const tips = await this.getTipsByIds({ contentIds: tipsIds })
+      const tips = await this.store.Tips.findAll({
+        where: {
+          user_id: user_id
+        },
+        order: [['createdAt', 'DESC']]
+      });
 
       let content = recipes.concat(posts, tips);
       content = await Promise.all(content.map(async (data) => {
@@ -702,7 +706,7 @@ class ContentAPI extends DataSource {
         return { id, ...vals, currentUserReacted }
       }))
 
-      return { content, hasMore };
+      return { content };
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
