@@ -557,10 +557,19 @@ class ContentAPI extends DataSource {
                 contentID,
                 user_id
             }
-        }).then(contentDetail => {
+        }).then(async contentDetail => {
             if (contentDetail) {
                 const {dataValues: {contentId, contentType}} = contentDetail;
-
+                if (contentType === "recipe") {
+                    await this.deleteRecipe(contentId);
+                } else if (contentType === "post") {
+                    await this.deletePost(contentId);
+                } else if (contentType === "tips") {
+                    await this.deleteTip(contentId);
+                }
+                await contentDetail.destroy();
+                success({badge: true, message: 'deleteContentById{} -> Content delete success, Id:' + contentID})
+                return 'Content delete success';
             } else {
                 error({badge: true, message: 'deleteContentById{} -> Invalid content id :' + contentID})
                 throw new Error('Invalid content id :' + contentID)
@@ -593,6 +602,7 @@ class ContentAPI extends DataSource {
             }
         });
     }
+
     /**
      * @apiNote delete Post by id
      * */
@@ -618,6 +628,7 @@ class ContentAPI extends DataSource {
             }
         });
     }
+
     /**
      * @apiNote delete Post by id
      * */
