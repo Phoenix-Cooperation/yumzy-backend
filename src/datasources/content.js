@@ -654,6 +654,49 @@ class ContentAPI extends DataSource {
             }
         });
     }
+
+    /**
+     * @ApiNode Get content by user id
+     * */
+    async getContentByUserId({pageSize, after}) {
+
+        const {user_id} = this.context.user;
+        if (!this.context.user) {
+            error({badge: true, message: 'User not logged in'})
+            throw new Error('Error! User is not logged in');
+        }
+        try {
+            const allContent = await this.store.ContentDetail.findAll({
+                where: {user_id},
+                order: [['createdAt', 'DESC']],
+            });
+            const slicedContent = allContent.slice(after, after + pageSize).map(data => data.dataValues)
+            let hasMore = false;
+
+            console.log(slicedContent.length + after, allContent.length)
+            if (slicedContent.length + after < allContent.length) hasMore = true
+
+            const recipeIds = slicedContent.filter(data => data?.contentType === "recipe").map(data => data?.contentId)
+            const postIds = slicedContent.filter(data => data?.contentType === "post").map(data => data.contentId)
+            const tipsIds = slicedContent.filter(data => data?.contentType === "tips").map(data => data.contentId)
+
+            const recipes = await this.getRecipesByIds({contentIds: recipeIds})
+            const posts = await this.getPostsByIds({contentIds: postIds})
+            const tips = await this.getTipsByIds({contentIds: tipsIds})
+
+            let content = recipes.concat(posts, tips);
+            content = await Promise.all(content.map(async (data) => {
+                const {id, ...vals} = data;
+                const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
+                return {id, ...vals, currentUserReacted}
+            }))
+
+            return {content, hasMore};
+        } catch (err) {
+            error({badge: true, message: err.message})
+            throw new Error(err.message)
+        }
+    }
 }
 
 export default ContentAPI;
