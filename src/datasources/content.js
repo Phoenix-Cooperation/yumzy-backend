@@ -243,11 +243,11 @@ class ContentAPI extends DataSource {
 
       let content = recipes.concat(posts, tips);
 
-      content = await Promise.all(content.map(async (data) => {
-        const { id, ...vals } = data;
-        const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
-        return { id, ...vals, currentUserReacted }
-      }))
+      // content = await Promise.all(content.map(async (data) => {
+      //   const { id, ...vals } = data;
+      //   const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
+      //   return { id, ...vals, currentUserReacted }
+      // }))
       // content = [...content].sort(() => Math.random() - 0.5);
 
       return content

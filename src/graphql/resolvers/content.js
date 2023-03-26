@@ -1,10 +1,10 @@
-import {validateSDL} from "graphql/validation/validate.js";
-import {ErrorResponse} from "../../util/errorHandler/errorResponse.js";
+import { validateSDL } from "graphql/validation/validate.js";
+import { ErrorResponse } from "../../util/errorHandler/errorResponse.js";
 
 
 export default {
   Query: {
-    getContent: async (_, {pageSize = 20, after = 0 }, { user: { user_id }, dataSources }) => {
+    getContent: async (_, { pageSize = 20, after = 0 }, { user: { user_id }, dataSources }) => {
 
       // const cachedContent = await dataSources.RedisCache.getContentCache(user_id, pageSize, after)
       // // console.log(cachedContent)
@@ -21,24 +21,32 @@ export default {
 
         // console.log("notInCache", notInCache, "content", content)
         if (notInCache.length > 0) {
-          let  notInCacheContent = await dataSources.ContentAPI.getContent(notInCache)
+          let notInCacheContent = await dataSources.ContentAPI.getContent(notInCache)
 
           notInCacheContent = await Promise.all(notInCacheContent.map(async (data) => {
-            const { user: { user_id }, user, id,  ...val } = data
+            const { user: { user_id }, user, id, ...val } = data
             const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
-  
+
             const commentCount = await dataSources.CommentAPI.getCommentCountForPost(id)
-            const temp = {...val, id,  user: { ...user, photoURL }, commentCount }
+            const temp = { ...val, id, user: { ...user, photoURL }, commentCount }
             await dataSources.RedisCache.setContentToCache(temp)
             return temp
           }))
           content = [...content, ...notInCacheContent]
 
+
+
         }
+
+        content = await Promise.all(content.map(async (data) => {
+          const { id, ...vals } = data;
+          const currentUserReacted = await dataSources.ContentAPI.checkCurrentUserReacted(id, user_id)
+          return { id, ...vals, currentUserReacted }
+        }))
         content = [...content].sort(() => Math.random() - 0.5);
         return { content, hasMore }
       } catch (error) {
-        throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})
+        throw new ErrorResponse({ message: `Cannot get content: ${error.message}` })
       }
     },
     getRecipeById: async (_, { id }, { dataSources }) => {
@@ -46,41 +54,41 @@ export default {
       let comments = await dataSources.CommentAPI.getComments(recipe.id);
 
       comments = await Promise.all(comments.map(async (comment) => {
-        const { user: { user_id }, user, ...vals} = comment;
+        const { user: { user_id }, user, ...vals } = comment;
         const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
-        return {...vals, user: { ...user, photoURL }} 
+        return { ...vals, user: { ...user, photoURL } }
       }))
 
       const commentCount = comments.length;
 
-      return {...recipe, comments, commentCount }
+      return { ...recipe, comments, commentCount }
     },
     getPostById: async (_, { id }, { dataSources }) => {
       const post = await dataSources.ContentAPI.getSinglePostById(id);
       let comments = await dataSources.CommentAPI.getComments(recipe.id);
 
       comments = await Promise.all(comments.map(async (comment) => {
-        const { user: { user_id }, user, ...vals} = comment;
+        const { user: { user_id }, user, ...vals } = comment;
         const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
-        return {...vals, user: { ...user, photoURL }} 
+        return { ...vals, user: { ...user, photoURL } }
       }))
 
       const commentCount = comments.length
 
-      return {...post, comments, commentCount };
+      return { ...post, comments, commentCount };
     },
     getTipsById: async (_, { id }, { dataSources }) => {
       const tips = await dataSources.ContentAPI.getSingleTipsById(id);
       let comments = await dataSources.CommentAPI.getComments(recipe.id);
 
       comments = await Promise.all(comments.map(async (comment) => {
-        const { user: { user_id }, user, ...vals} = comment;
+        const { user: { user_id }, user, ...vals } = comment;
         const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
-        return {...vals, user: { ...user, photoURL }} 
+        return { ...vals, user: { ...user, photoURL } }
       }))
 
       const commentCount = comments.length
-      return {...tips, comments, commentCount };
+      return { ...tips, comments, commentCount };
     },
   },
   Mutation: {
@@ -89,7 +97,7 @@ export default {
         const recipe = await dataSources.ContentAPI.createRecipe(recipeInput)
         return recipe;
       } catch (error) {
-        throw new ErrorResponse({ message: `Cannot create recipe: ${error.message}`})
+        throw new ErrorResponse({ message: `Cannot create recipe: ${error.message}` })
       }
 
     },
@@ -98,7 +106,7 @@ export default {
         const tips = await dataSources.ContentAPI.createTips(tipsInput)
         return tips;
       } catch (error) {
-        throw new ErrorResponse({ message: `Cannot create tips: ${error.message}`})
+        throw new ErrorResponse({ message: `Cannot create tips: ${error.message}` })
       }
     },
 
@@ -107,18 +115,18 @@ export default {
         const post = await dataSources.ContentAPI.createPost(postInput)
         return post;
       } catch (error) {
-        throw new ErrorResponse({ message: `Cannot create post: ${error.message}`})
+        throw new ErrorResponse({ message: `Cannot create post: ${error.message}` })
       }
     },
 
-    reactToContent: async (_, { contentId }, { dataSources}) => {
+    reactToContent: async (_, { contentId }, { dataSources }) => {
       const message = await dataSources.ContentAPI.reactToContent(contentId);
-      
+
       if (message.message === "success") {
         const content = await dataSources.RedisCache.getSingleContent(contentId)
         if (content) {
           content.reactCount += 1
-          content.currentUserReacted = true
+          // content.currentUserReacted = true
           await dataSources.RedisCache.setContentToCache(content)
         }
       }
@@ -134,7 +142,7 @@ export default {
         if (content) {
           console.log("updating cache")
           content.reactCount -= 1
-          content.currentUserReacted = false
+          // content.currentUserReacted = false
           await dataSources.RedisCache.setContentToCache(content)
         }
       }
