@@ -673,7 +673,6 @@ class ContentAPI extends DataSource {
             const slicedContent = allContent.slice(after, after + pageSize).map(data => data.dataValues)
             let hasMore = false;
 
-            console.log(slicedContent.length + after, allContent.length)
             if (slicedContent.length + after < allContent.length) hasMore = true
 
             const recipeIds = slicedContent.filter(data => data?.contentType === "recipe").map(data => data?.contentId)
