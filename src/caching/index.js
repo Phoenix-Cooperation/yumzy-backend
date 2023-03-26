@@ -41,8 +41,17 @@ class RedisCache extends DataSource {
         }
     }
 
+    async getSingleContent(contentId) {
+        try {
+            const tempContent = await this.redis.get(contentId)
+            return JSON.parse(tempContent)
+        } catch (error) {
+            error({ badge: true, message: err.message })
+            throw new Error(err.message)
+        }
+    }
+
     async getContentFromCache(contentDetails) {
-        console.log(contentDetails)
         let notInCache = []
         let content = []
         try {
@@ -62,7 +71,7 @@ class RedisCache extends DataSource {
     async setContentToCache(content) {
         const { id: key } = content
         try {
-            await this.redis.set(key, JSON.stringify(content), 'EX', '130')
+            await this.redis.set(key, JSON.stringify(content), 'EX', '300')
         } catch (err) {
             error({ message: err.message, badge: true })
             throw new Error(err.message)

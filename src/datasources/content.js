@@ -385,7 +385,7 @@ class ContentAPI extends DataSource {
       await this.store.Post.update(contentData, {
         where: { id }
       })
-      
+      // return contentData
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
@@ -400,7 +400,7 @@ class ContentAPI extends DataSource {
       await this.store.Post.update(contentData, {
         where: { id }
       })
-      
+      // return contentData
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
@@ -415,7 +415,7 @@ class ContentAPI extends DataSource {
       await this.store.Tips.update(contentData, {
         where: { id }
       })
-
+      // return contentData
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)

@@ -22,7 +22,6 @@ export default {
         // console.log("notInCache", notInCache, "content", content)
         if (notInCache.length > 0) {
           let  notInCacheContent = await dataSources.ContentAPI.getContent(notInCache)
-          console.log(notInCacheContent)
 
           notInCacheContent = await Promise.all(notInCacheContent.map(async (data) => {
             const { user: { user_id }, user, id,  ...val } = data
@@ -114,11 +113,31 @@ export default {
 
     reactToContent: async (_, { contentId }, { dataSources}) => {
       const message = await dataSources.ContentAPI.reactToContent(contentId);
+      
+      if (message.message === "success") {
+        const content = await dataSources.RedisCache.getSingleContent(contentId)
+        if (content) {
+          content.reactCount += 1
+          content.currentUserReacted = true
+          await dataSources.RedisCache.setContentToCache(content)
+        }
+      }
+
       return message;
     },
 
     unReactToContent: async (_, { contentId }, { dataSources }) => {
       const message = await dataSources.ContentAPI.unReactToContent(contentId);
+
+      if (message.message === "success") {
+        const content = await dataSources.RedisCache.getSingleContent(contentId)
+        if (content) {
+          console.log("updating cache")
+          content.reactCount -= 1
+          content.currentUserReacted = false
+          await dataSources.RedisCache.setContentToCache(content)
+        }
+      }
       return message;
     }
   }
