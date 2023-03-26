@@ -192,7 +192,6 @@ class ContentAPI extends DataSource {
         }
     }
 
-
     async checkCurrentUserReacted(contentId, user_id) {
         const status = await this.store.ContentReact.findOne({
             where: {
@@ -205,7 +204,6 @@ class ContentAPI extends DataSource {
 
         return false;
     }
-
 
     async getContent({pageSize, after}) {
         try {
@@ -542,6 +540,108 @@ class ContentAPI extends DataSource {
             error({badge: true, message: err.message})
             throw new Error(err.message)
         }
+    }
+
+    /**
+     * @apiNote: deleteContentByContentIDAndUserID
+     * @param contentID
+     * */
+    async deleteContentById(contentID) {
+        const {user_id} = this.context.user;
+        if (!this.context.user) {
+            error({badge: true, message: 'User not logged in'})
+            throw new Error('Error! User is not logged in');
+        }
+        await this.store.ContentDetail.findOne({
+            where: {
+                contentID,
+                user_id
+            }
+        }).then(contentDetail => {
+            if (contentDetail) {
+                const {dataValues: {contentId, contentType}} = contentDetail;
+
+            } else {
+                error({badge: true, message: 'deleteContentById{} -> Invalid content id :' + contentID})
+                throw new Error('Invalid content id :' + contentID)
+            }
+        });
+    }
+
+    /**
+     * @apiNote delete Post by id
+     * */
+    async deletePost(contentID) {
+        const {user_id} = this.context.user;
+        if (!this.context.user) {
+            error({badge: true, message: 'User not logged in'})
+            throw new Error('Error! User is not logged in');
+        }
+        await this.store.Post.findOne({
+            where: {
+                contentID,
+                user_id
+            }
+        }).then(contentDetail => {
+            if (contentDetail) {
+                contentDetail.destroy();
+                success({badge: true, message: 'deletePost{} -> Post delete success, Id:' + contentID})
+                return 'Post delete success';
+            } else {
+                error({badge: true, message: 'deletePost{} -> Invalid content id :' + contentID})
+                throw new Error('Invalid content id :' + contentID)
+            }
+        });
+    }
+    /**
+     * @apiNote delete Post by id
+     * */
+    async deleteTip(contentID) {
+        const {user_id} = this.context.user;
+        if (!this.context.user) {
+            error({badge: true, message: 'User not logged in'})
+            throw new Error('Error! User is not logged in');
+        }
+        await this.store.Tips.findOne({
+            where: {
+                contentID,
+                user_id
+            }
+        }).then(contentDetail => {
+            if (contentDetail) {
+                contentDetail.destroy();
+                success({badge: true, message: 'deleteTips{} -> Tips delete success, Id:' + contentID})
+                return 'Tips delete success';
+            } else {
+                error({badge: true, message: 'deleteTip{} -> Invalid content id :' + contentID})
+                throw new Error('Invalid content id :' + contentID)
+            }
+        });
+    }
+    /**
+     * @apiNote delete Post by id
+     * */
+    async deleteRecipe(contentID) {
+        const {user_id} = this.context.user;
+        if (!this.context.user) {
+            error({badge: true, message: 'User not logged in'})
+            throw new Error('Error! User is not logged in');
+        }
+        await this.store.Recipe.findOne({
+            where: {
+                contentID,
+                user_id
+            }
+        }).then(contentDetail => {
+            if (contentDetail) {
+                contentDetail.destroy();
+                success({badge: true, message: 'deleteRecipe{} -> Recipe delete success, Id:' + contentID})
+                return 'Recipe delete success';
+            } else {
+                error({badge: true, message: 'deleteRecipe{} -> Invalid content id :' + contentID})
+                throw new Error('Invalid content id :' + contentID)
+            }
+        });
     }
 }
 
