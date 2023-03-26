@@ -36,7 +36,7 @@ class ContentAPI extends DataSource {
       const recipeVal = await recipePost.save();
 
       const { dataValues: { id } } = recipeVal;
-      const tempContentDetail = { contentId: id, contentType: "recipe" }
+      const tempContentDetail = { contentId: id, contentType: "recipe", user_id }
       const contentDetail = new this.store.ContentDetail(tempContentDetail)
       const contentDetailVal = await contentDetail.save()
 
@@ -70,7 +70,7 @@ class ContentAPI extends DataSource {
       const tipsVal = await tips.save()
 
       const { dataValues: { id } } = tipsVal;
-      const tempContentDetail = { contentId: id, contentType: "tips" }
+      const tempContentDetail = { contentId: id, contentType: "tips", user_id }
       const contentDetail = new this.store.ContentDetail(tempContentDetail)
       const contentDetailVal = await contentDetail.save()
 
@@ -103,7 +103,7 @@ class ContentAPI extends DataSource {
       const postVal = await post.save()
       const { dataValues: { id } } = postVal;
 
-      const tempContentDetail = { contentId: id, contentType: "post" }
+      const tempContentDetail = { contentId: id, contentType: "post", user_id }
       const contentDetail = new this.store.ContentDetail(tempContentDetail)
       const contentDetailVal = await contentDetail.save()
 
