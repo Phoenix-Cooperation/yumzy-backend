@@ -31,6 +31,21 @@ export default {
                 throw new ErrorResponse({message: `Cannot get content: ${error.message}`})
             }
         },
+        getContentUserId: async (_, {pageSize = 20, after = 0}, {user: {user_id}, dataSources}) => {
+            try {
+                let {content, hasMore} = await dataSources.ContentAPI.getContentByUserId({pageSize, after})
+                content = await Promise.all(content.map(async (data) => {
+                    const {user: {user_id}, user, id, ...val} = data
+                    const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
+
+                    const commentCount = await dataSources.CommentAPI.getCommentCountForPost(id)
+                    return {...val, id, user: {...user, photoURL}, commentCount}
+                }))
+                return {content, hasMore}
+            } catch (error) {
+                throw new ErrorResponse({message: `Cannot get content: ${error.message}`})
+            }
+        },
         getRecipeById: async (_, {id}, {dataSources}) => {
             const recipe = await dataSources.ContentAPI.getSingleRecipeById(id);
             let comments = await dataSources.CommentAPI.getComments(recipe.id);
@@ -72,10 +87,10 @@ export default {
             const commentCount = comments.length
             return {...tips, comments, commentCount};
         },
-      /**
-       * User save content saved as favourite
-       * */
-      searchContentSaved: async (_, {contentId}, {dataSources}) => {
+        /**
+         * User save content saved as favourite
+         * */
+        searchContentSaved: async (_, {contentId}, {dataSources}) => {
             return await dataSources.ContentAPI.searchContentSaved(contentId);
         },
     },
