@@ -1,6 +1,7 @@
 import { Redis } from "ioredis"
 import { DataSource } from "apollo-datasource"
 import console from 'consola';
+// import content from "../graphql/resolvers/content";
 
 const { error } = console;
 // const redis = new Redis({
@@ -28,7 +29,6 @@ class RedisCache extends DataSource {
     async checkCache(key) {
         try {
             const res = await this.redis.exists(key)
-            console.log(res)
             if (res === 1) {
                 return true
             } else {
@@ -41,36 +41,68 @@ class RedisCache extends DataSource {
         }
     }
 
-    
-    generateKeyUserContent(userId, pageSize, after) {
-        return `${userId}-${after}-${pageSize + after}`
-    }
-
-    async setContentCache(userId, pageSize, after, response) {
-        const key = this.generateKeyUserContent(userId, pageSize, after)
-
+    async getSingleContent(contentId) {
         try {
-            await this.redis.set(key, JSON.stringify(response), 'EX', '60')
-        } catch (err) {
-            error({ message: err.message, badge: true })
-            return 
+            const tempContent = await this.redis.get(contentId)
+            return JSON.parse(tempContent)
+        } catch (error) {
+            error({ badge: true, message: err.message })
+            throw new Error(err.message)
         }
     }
 
-    async getContentCache(userId, pageSize, after) {
-        const key = this.generateKeyUserContent(userId, pageSize, after)
-        console.log('get content')
+    async getContentFromCache(contentDetails) {
+        let notInCache = []
+        let content = []
         try {
-            if (this.checkCache(key)) {
-                const res = await this.redis.get(key)
-                return JSON.parse(res)
+            for (const contentDetail of contentDetails) {
+                const tempContent = await this.redis.get(contentDetail?.contentId)
+                if (tempContent) content.push(JSON.parse(tempContent))
+                else notInCache.push(contentDetail)
             }
-            return null
+            
+            return { content, notInCache }
         } catch (err) {
-            error({ message: err.message, badge: true })
-            return null
+            error({ badge: true, message: err.message })
+            throw new Error(err.message)
         }
     }
+
+    async setContentToCache(content) {
+        const { id: key } = content
+        try {
+            await this.redis.set(key, JSON.stringify(content), 'EX', '300')
+        } catch (err) {
+            error({ message: err.message, badge: true })
+            throw new Error(err.message)
+        }
+    }
+
+    // async setContentCache(userId, pageSize, after, response) {
+    //     const key = this.generateKeyUserContent(userId, pageSize, after)
+
+    //     try {
+    //         await this.redis.set(key, JSON.stringify(response), 'EX', '60')
+    //     } catch (err) {
+    //         error({ message: err.message, badge: true })
+    //         return 
+    //     }
+    // }
+
+    // async getContentCache(userId, pageSize, after) {
+    //     const key = this.generateKeyUserContent(userId, pageSize, after)
+    //     console.log('get content')
+    //     try {
+    //         if (this.checkCache(key)) {
+    //             const res = await this.redis.get(key)
+    //             return JSON.parse(res)
+    //         }
+    //         return null
+    //     } catch (err) {
+    //         error({ message: err.message, badge: true })
+    //         return null
+    //     }
+    // }
 }
 
 export default RedisCache;

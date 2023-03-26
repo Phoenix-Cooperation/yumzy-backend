@@ -18,6 +18,14 @@ export default {
     addComment: async (_, { comment, contentId }, { dataSources }) => {
       console.log(comment, "comment")
       const message = await dataSources.CommentAPI.addComment(comment, contentId);
+
+      if (message.message === "success") {
+        const content = await dataSources.RedisCache.getSingleContent(contentId)
+        if (content) {
+          content.commentCount += 1
+          await dataSources.RedisCache.setContentToCache(content)
+        }
+      }
       return message;
     }
   },
