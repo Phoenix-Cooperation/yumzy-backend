@@ -498,7 +498,7 @@ class ContentAPI extends DataSource {
         const isSaved = await this.isContentSavedByUser(saveData.contentId, user_id);
         if (!isSaved) {
             try {
-                const savedContent = new this.store.SavedContent(saveData);
+                let savedContent = new this.store.SavedContent(saveData);
                 savedContent.user_id = user_id
                 const savedResponse = await savedContent.save()
                 const {dataValues: {id}} = savedResponse;
@@ -659,11 +659,60 @@ class ContentAPI extends DataSource {
      * @ApiNode Get content by user id
      * */
     async getContentByUserId({pageSize, after}) {
+        const PAGE_SIZE = 10;
+        const offset = (pageSize - 1) * PAGE_SIZE;
+        const limit = PAGE_SIZE;
 
         const {user_id} = this.context.user;
         if (!this.context.user) {
             error({badge: true, message: 'User not logged in'})
             throw new Error('Error! User is not logged in');
+        }
+        try {
+
+            const postQuery = {where: {user_id: user_id}, order: [['createdAt', 'DESC']]};
+            const tipsQuery = {where: {user_id: user_id}, order: [['createdAt', 'DESC']]};
+            const receiptQuery = {where: {user_id: user_id}, order: [['createdAt', 'DESC']]};
+
+            const postCountPromise = this.store.Post.count(postQuery);
+            const tipsCountPromise = this.store.Tips.count(tipsQuery);
+            const receiptCountPromise = this.store.Recipe.count(receiptQuery);
+
+            Promise.all([postCountPromise, tipsCountPromise, receiptCountPromise])
+                .then(([postCount, tipsCount, receiptCount]) => {
+                    const totalPages = Math.ceil((postCount + tipsCount + receiptCount) / PAGE_SIZE);
+                    let currentPage = pageSize || 1;
+                    currentPage = Math.max(1, Math.min(currentPage, totalPages));
+
+                    const postOffset = PAGE_SIZE * (currentPage - 1);
+                    const tipsOffset = PAGE_SIZE * (currentPage - 1) - postCount;
+                    const receiptOffset = PAGE_SIZE * (currentPage - 1) - postCount;
+
+                    const postFetchPromise = this.store.Post.findAll({
+                        ...postQuery,
+                        offset: postOffset,
+                        limit: PAGE_SIZE
+                    });
+                    const tipsFetchPromise = this.store.Tips.findAll({
+                        ...tipsQuery,
+                        offset: tipsOffset,
+                        limit: PAGE_SIZE
+                    });
+                    const receiptFetchPromise = this.store.Recipe.findAll({
+                        ...receiptQuery,
+                        offset: receiptOffset,
+                        limit: PAGE_SIZE
+                    });
+
+                    return Promise.all([postFetchPromise, tipsFetchPromise, receiptFetchPromise, currentPage, totalPages]);
+                })
+                .then(([posts, tips, receipts, currentPage, totalPages]) => {
+                    const result = [...posts, ...tips, ...receipts];
+                    // Handle result
+                })
+        } catch (err) {
+            error({badge: true, message: err.message})
+            throw new Error(err.message)
         }
         try {
             const allContent = await this.store.ContentDetail.findAll({

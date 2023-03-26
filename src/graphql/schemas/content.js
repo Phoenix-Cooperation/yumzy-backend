@@ -27,11 +27,8 @@ export default gql`
     }
 
     input SaveContentInput {
-        id: String!
         contentId: String!
         contentType: String!
-        user_id: String!
-        tags: String!
     }
 
     type SaveContent{

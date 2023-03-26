@@ -128,16 +128,16 @@ export default {
             const message = await dataSources.ContentAPI.unReactToContent(contentId);
             return message;
         },
-        contentSaved: async (_, {savedInput}, {dataSources}) => {
+        contentSaved: async (_, {contentSaveInput}, {dataSources}) => {
             try {
-                return await dataSources.ContentAPI.contentSaved(savedInput);
+                return await dataSources.ContentAPI.contentSaved(contentSaveInput);
             } catch (error) {
                 throw new ErrorResponse({message: `Cannot save Content: ${error.message}`})
             }
         },
-        deleteContentById: async (_, {deleteContentInput}, {dataSources}) => {
+        deleteContentById: async (_, {contentID}, {dataSources}) => {
             try {
-                return await dataSources.ContentAPI.deleteContentById(deleteContentInput);
+                return await dataSources.ContentAPI.deleteContentById(contentID);
             } catch (error) {
                 throw new ErrorResponse({message: `Cannot save Content: ${error.message}`})
             }
