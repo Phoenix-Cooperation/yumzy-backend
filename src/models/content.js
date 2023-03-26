@@ -1,4 +1,4 @@
-import sequelize, { DataTypes, Sequelize} from "sequelize";
+import sequelize, {DataTypes, Sequelize} from "sequelize";
 
 
 export const RecipeModel = {
@@ -85,7 +85,7 @@ export const ContentDetailModel = {
     contentId: {
         type: DataTypes.UUID,
         primaryKey: true,
-    }, 
+    },
     contentType: {
         type: sequelize.STRING
     }
@@ -96,6 +96,17 @@ export const ContentReactModel = {
         type: DataTypes.UUID
     },
     user_id: {
+        type: sequelize.STRING
+    }
+}
+
+export const SaveContentModel = {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+    },
+    contentType: {
         type: sequelize.STRING
     }
 }

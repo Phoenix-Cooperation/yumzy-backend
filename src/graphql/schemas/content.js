@@ -8,13 +8,38 @@ export default gql`
         createPost(postInput: PostInput!): Post
         reactToContent(contentId: String!): messageResponse
         unReactToContent(contentId: String!): messageResponse
+        contentSaved(contentSaveInput: SaveContentInput!): messageResponse
+        deleteContentById(contentID: String!): messageResponse
     }
 
     extend type Query {
         getContent(pageSize: Int!, after: Int): getContentResponse
+        getContentUserId(pageSize: Int!, after: Int): getContentResponse
         getRecipeById(id: String!): Recipe
         getPostById(id: String!): Post
         getTipsById(id: String!): Tips
+        searchContentSaved(contentId: String):[SaveContent]
+    }
+
+    input DeleteContentInput {
+        contentId: String!
+        contentType: String!
+    }
+
+    input SaveContentInput {
+        id: String!
+        contentId: String!
+        contentType: String!
+        user_id: String!
+        tags: String!
+    }
+
+    type SaveContent{
+        id: String!
+        contentId: String!
+        contentType: String!
+        user_id: String!
+        tags: String!
     }
 
     type messageResponse {
