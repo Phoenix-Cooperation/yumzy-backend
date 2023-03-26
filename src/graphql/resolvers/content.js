@@ -1,5 +1,5 @@
-import { validateSDL } from "graphql/validation/validate.js";
-import { ErrorResponse } from "../../util/errorHandler/errorResponse.js";
+import {validateSDL} from "graphql/validation/validate.js";
+import {ErrorResponse} from "../../util/errorHandler/errorResponse.js";
 
 
 export default {

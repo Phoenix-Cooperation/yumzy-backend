@@ -17,11 +17,11 @@ class ContentAPI extends DataSource {
   async createRecipe(recipePostData) {
 
     if (!this.context.user) {
-      error({badge: true, message: 'User not logged in'})
+      error({ badge: true, message: 'User not logged in' })
       throw new Error('Error! User is not logged in');
     }
 
-    const { user_id }= this.context.user;
+    const { user_id } = this.context.user;
     // console.log("post api userid", user_id)
     // const { dataValues: user } = await this.store.User.findOne({
     //   where: {
@@ -34,9 +34,9 @@ class ContentAPI extends DataSource {
       const recipePost = new this.store.Recipe(recipePostData);
       recipePost.user_id = user_id
       const recipeVal = await recipePost.save();
-      
-      const { dataValues: { id }} = recipeVal;
-      const tempContentDetail = { contentId: id, contentType: "recipe"}
+
+      const { dataValues: { id } } = recipeVal;
+      const tempContentDetail = { contentId: id, contentType: "recipe" }
       const contentDetail = new this.store.ContentDetail(tempContentDetail)
       const contentDetailVal = await contentDetail.save()
 
@@ -44,8 +44,7 @@ class ContentAPI extends DataSource {
       success({ badge: true, message: "Recipe Created!" })
       return recipeVal.dataValues;
 
-    }
-    catch (err) {
+    } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
     }
@@ -53,7 +52,7 @@ class ContentAPI extends DataSource {
 
   async createTips(tipsData) {
     if (!this.context.user) {
-      error({badge: true, message: 'User not logged in'})
+      error({ badge: true, message: 'User not logged in' })
       throw new Error('Error! User is not logged in');
     }
 
@@ -70,12 +69,12 @@ class ContentAPI extends DataSource {
       tips.user_id = user_id
       const tipsVal = await tips.save()
 
-      const { dataValues: { id }} = tipsVal;
-      const tempContentDetail = { contentId: id, contentType: "tips"}
+      const { dataValues: { id } } = tipsVal;
+      const tempContentDetail = { contentId: id, contentType: "tips" }
       const contentDetail = new this.store.ContentDetail(tempContentDetail)
       const contentDetailVal = await contentDetail.save()
 
-      success({ badge: true,  message: "Tips Created!"})
+      success({ badge: true, message: "Tips Created!" })
       return tipsVal.dataValues;
     } catch (error) {
       error({ badge: true, message: err.message })
@@ -86,7 +85,7 @@ class ContentAPI extends DataSource {
 
   async createPost(postData) {
     if (!this.context.user) {
-      error({badge: true, message: 'User not logged in'})
+      error({ badge: true, message: 'User not logged in' })
       throw new Error('Error! User is not logged in');
     }
 
@@ -104,11 +103,11 @@ class ContentAPI extends DataSource {
       const postVal = await post.save()
       const { dataValues: { id } } = postVal;
 
-      const tempContentDetail = { contentId: id, contentType: "post"}
+      const tempContentDetail = { contentId: id, contentType: "post" }
       const contentDetail = new this.store.ContentDetail(tempContentDetail)
       const contentDetailVal = await contentDetail.save()
 
-      success({ badge: true,  message: "Post Created!"})
+      success({ badge: true, message: "Post Created!" })
       return postVal.dataValues;
     } catch (err) {
       error({ badge: true, message: err.message })
@@ -117,7 +116,7 @@ class ContentAPI extends DataSource {
 
   }
 
-  async getRecipesByIds({contentIds}) {
+  async getRecipesByIds({ contentIds }) {
     if (contentIds === []) return [];
 
     try {
@@ -131,8 +130,8 @@ class ContentAPI extends DataSource {
       });
 
       const recipes = recipeVals.map(data => {
-        const { user, ...vals} = data.dataValues;
-        return { type: 'recipe', ...vals, user: user.dataValues}
+        const { user, ...vals } = data.dataValues;
+        return { type: 'recipe', ...vals, user: user.dataValues }
       });
 
       return recipes;
@@ -142,7 +141,7 @@ class ContentAPI extends DataSource {
     }
   }
 
-  async getPostsByIds({contentIds}) {
+  async getPostsByIds({ contentIds }) {
     if (contentIds === []) return [];
 
     try {
@@ -155,10 +154,10 @@ class ContentAPI extends DataSource {
         include: 'user',
       })
 
-      
+
       const posts = postVals.map(data => {
-        const { user, ...vals} = data.dataValues;
-        return { type: 'post', ...vals, user: user.dataValues}
+        const { user, ...vals } = data.dataValues;
+        return { type: 'post', ...vals, user: user.dataValues }
       });
 
       return posts;
@@ -168,7 +167,7 @@ class ContentAPI extends DataSource {
     }
   }
 
-  async getTipsByIds({contentIds}) {
+  async getTipsByIds({ contentIds }) {
     if (contentIds === []) return [];
 
     try {
@@ -182,8 +181,8 @@ class ContentAPI extends DataSource {
       })
 
       const tips = tipsVals.map(data => {
-        const { user, ...vals} = data.dataValues;
-        return { type: 'tips', ...vals, user: user.dataValues}
+        const { user, ...vals } = data.dataValues;
+        return { type: 'tips', ...vals, user: user.dataValues }
       })
 
       return tips;
@@ -193,11 +192,10 @@ class ContentAPI extends DataSource {
     }
   }
 
-
   async checkCurrentUserReacted(contentId, user_id) {
     const status = await this.store.ContentReact.findOne({
       where: {
-        contentId, 
+        contentId,
         user_id
       }
     });
@@ -206,12 +204,13 @@ class ContentAPI extends DataSource {
 
     return false;
   }
-  
-  async getPaginatedContentDetail({pageSize, after}) {
+
+
+  async getPaginatedContentDetail({ pageSize, after }) {
     try {
       const allContent = await this.store.ContentDetail.findAll({
         order: [['createdAt', 'DESC']],
-      }) 
+      })
 
       const slicedContent = allContent.slice(after, after + pageSize).map(data => data.dataValues)
       let hasMore = false;
@@ -232,19 +231,10 @@ class ContentAPI extends DataSource {
 
       const { user_id } = this.context.user;
 
-      // const allContent = await this.store.ContentDetail.findAll({
-      //   order: [['createdAt', 'DESC']],
-      // })
-      // const slicedContent = allContent.slice(after, after + pageSize).map(data => data.dataValues)
-      // let hasMore = false;
-
-      // console.log(slicedContent.length + after, allContent.length)
-      // if (slicedContent.length + after < allContent.length) hasMore = true
-
       const recipeIds = slicedContent.filter(data => data?.contentType === "recipe").map(data => data?.contentId)
       const postIds = slicedContent.filter(data => data?.contentType === "post").map(data => data.contentId)
-      const tipsIds =  slicedContent.filter(data => data?.contentType === "tips").map(data => data.contentId)
-      
+      const tipsIds = slicedContent.filter(data => data?.contentType === "tips").map(data => data.contentId)
+
       const recipes = await this.getRecipesByIds({ contentIds: recipeIds })
       const posts = await this.getPostsByIds({ contentIds: postIds })
       const tips = await this.getTipsByIds({ contentIds: tipsIds })
@@ -276,7 +266,6 @@ class ContentAPI extends DataSource {
       const { user_id } = this.context.user;
 
       const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
-      console.log("currentUser", currentUserReacted)
       return { ...data.dataValues, currentUserReacted }
     } catch (err) {
       error({ badge: true, message: err.message })
@@ -291,7 +280,7 @@ class ContentAPI extends DataSource {
       const { user_id } = this.context.user;
 
       const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
-      
+
       return { ...data.dataValues, currentUserReacted }
     } catch (err) {
       error({ badge: true, message: err.message })
@@ -305,7 +294,7 @@ class ContentAPI extends DataSource {
       const { user_id } = this.context.user;
 
       const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
-      
+
       return { ...data.dataValues, currentUserReacted }
 
     } catch (err) {
@@ -313,7 +302,6 @@ class ContentAPI extends DataSource {
       throw new Error(err.message)
     }
   }
-
 
   async getSingleRecipeById(id) {
     try {
@@ -347,35 +335,6 @@ class ContentAPI extends DataSource {
     }
   }
 
-  async reactToRecipe(id) {
-    try {
-      let contentData = await this.getSingleRecipeById(id);
-      
-      contentData.reactCount = contentData.reactCount + 1;
-      await this.store.Recipe.update(contentData, {
-        where: { id }
-      })
-      
-    } catch (err) {
-      error({ badge: true, message: err.message })
-      throw new Error(err.message)
-    }
-  }
-
-  async unReactToRecipe(id) {
-    try {
-      let contentData = await this.getSingleRecipeById(id);
-      
-      contentData.reactCount = contentData.reactCount - 1;
-      await this.store.Recipe.update(contentData, {
-        where: { id }
-      })
-      
-    } catch (err) {
-      error({ badge: true, message: err.message })
-      throw new Error(err.message)
-    }
-  }
 
   async reactToPost(id) {
     try {
@@ -407,9 +366,9 @@ class ContentAPI extends DataSource {
     }
   }
 
-  async reactToTips(id) {
+  async reactToPost(id) {
     try {
-      let contentData = await this.getSingleTipsById(id);
+      let contentData = await this.getSinglePostById(id);
 
       contentData.reactCount = contentData.reactCount + 1;
       await this.store.Tips.update(contentData, {
@@ -422,12 +381,39 @@ class ContentAPI extends DataSource {
     }
   }
 
-  
+  async unReactToPost(id) {
+    try {
+      let contentData = await this.getSinglePostById(id);
 
+      contentData.reactCount = contentData.reactCount - 1;
+      await this.store.Post.update(contentData, {
+        where: { id }
+      })
+
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  async reactToTips(id) {
+    try {
+      let contentData = await this.getSingleTipsById(id);
+
+      contentData.reactCount = contentData.reactCount + 1;
+      await this.store.Tips.update(contentData, {
+        where: { id }
+      })
+
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
 
   async reactToContent(id) {
     if (!this.context.user) {
-      error({badge: true, message: 'User not logged in'})
+      error({ badge: true, message: 'User not logged in' })
       throw new Error('Error! User is not logged in');
     }
 
@@ -436,13 +422,13 @@ class ContentAPI extends DataSource {
     try {
       const vals = await this.store.ContentDetail.findOne({
         where: {
-          contentId : id
+          contentId: id
         }
       })
-      
+
       const { dataValues: ContentDetail } = vals;
       const { contentType } = ContentDetail;
-      
+
       if (contentType === "recipe") {
         await this.reactToRecipe(id)
       } else if (contentType === "post") {
@@ -451,22 +437,17 @@ class ContentAPI extends DataSource {
         await this.reactToTips(id);
       }
 
-      const contentReact= await new this.store.ContentReact({ contentId: id, user_id })
+      const contentReact = await new this.store.ContentReact({ contentId: id, user_id })
       await contentReact.save()
       return { message: "success" }
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err)
     }
   }
 
-
-
-  
-
   async unReactToContent(id) {
     if (!this.context.user) {
-      error({badge: true, message: 'User not logged in'})
+      error({ badge: true, message: 'User not logged in' })
       throw new Error('Error! User is not logged in');
     }
 
@@ -475,7 +456,7 @@ class ContentAPI extends DataSource {
     try {
       const vals = await this.store.ContentDetail.findOne({
         where: {
-          contentId : id
+          contentId: id
         }
       });
 
@@ -499,12 +480,234 @@ class ContentAPI extends DataSource {
 
       return { message: "success" }
     } catch (error) {
-      
+
     }
   }
 
+  /**
+   * check whether content already save by user id
+   * */
+  async isContentSavedByUser(contentId, user_id) {
+    await this.store.SavedContent.findOne({
+      where: {
+        contentId,
+        user_id
+      }
+    }).then(data => {
+      return !!data;
+    });
+  }
 
+  /**
+   * @apiNote: user save content as favorite
+   * */
+  async contentSaved(saveData) {
+    const { user_id } = this.context.user;
+    if (!this.context.user) {
+      error({ badge: true, message: 'User not logged in' })
+      throw new Error('Error! User is not logged in');
+    }
+    const isSaved = await this.isContentSavedByUser(saveData.contentId, user_id);
+    if (!isSaved) {
+      try {
+        const savedContent = new this.store.SavedContent(saveData);
+        savedContent.user_id = user_id
+        const savedResponse = await savedContent.save()
+        const { dataValues: { id } } = savedResponse;
 
+        success({ badge: true, message: "Content Saved!" })
+        return savedResponse.dataValues;
+      } catch (err) {
+        error({ badge: true, message: err.message })
+        throw new Error(err.message)
+      }
+    } else {
+      error({ badge: true, message: 'contentSaved{} -> Already saved' })
+      return 'Already saved';
+    }
+  }
+
+  /**
+   * @apiNote: get saved contented by user id and content id
+   * @param contentId user can provide or not content id
+   * */
+  async searchContentSaved(contentId) {
+    const { user_id } = this.context.user;
+    if (!this.context.user) {
+      error({ badge: true, message: 'User not logged in' })
+      throw new Error('Error! User is not logged in');
+    }
+    try {
+      let query;
+      if (contentId) {
+        query = { where: { contentId: contentId, user_id: user_id }, order: [['createdAt', 'DESC']] };
+      } else {
+        query = { where: { user_id: user_id }, order: [['createdAt', 'DESC']] };
+      }
+      const { dataValues: savedContents } = await this.store
+        .SavedContent
+        .findAll(query)
+      return savedContents;
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
+
+  /**
+   * @apiNote: deleteContentByContentIDAndUserID
+   * @param contentID
+   * */
+  async deleteContentById(contentID) {
+    const { user_id } = this.context.user;
+    if (!this.context.user) {
+      error({ badge: true, message: 'User not logged in' })
+      throw new Error('Error! User is not logged in');
+    }
+    await this.store.ContentDetail.findOne({
+      where: {
+        contentID,
+        user_id
+      }
+    }).then(async contentDetail => {
+      if (contentDetail) {
+        const { dataValues: { contentId, contentType } } = contentDetail;
+        if (contentType === "recipe") {
+          await this.deleteRecipe(contentId);
+        } else if (contentType === "post") {
+          await this.deletePost(contentId);
+        } else if (contentType === "tips") {
+          await this.deleteTip(contentId);
+        }
+        await contentDetail.destroy();
+        success({ badge: true, message: 'deleteContentById{} -> Content delete success, Id:' + contentID })
+        return 'Content delete success';
+      } else {
+        error({ badge: true, message: 'deleteContentById{} -> Invalid content id :' + contentID })
+        throw new Error('Invalid content id :' + contentID)
+      }
+    });
+  }
+
+  /**
+   * @apiNote delete Post by id
+   * */
+  async deletePost(contentID) {
+    const { user_id } = this.context.user;
+    if (!this.context.user) {
+      error({ badge: true, message: 'User not logged in' })
+      throw new Error('Error! User is not logged in');
+    }
+    await this.store.Post.findOne({
+      where: {
+        contentID,
+        user_id
+      }
+    }).then(contentDetail => {
+      if (contentDetail) {
+        contentDetail.destroy();
+        success({ badge: true, message: 'deletePost{} -> Post delete success, Id:' + contentID })
+        return 'Post delete success';
+      } else {
+        error({ badge: true, message: 'deletePost{} -> Invalid content id :' + contentID })
+        throw new Error('Invalid content id :' + contentID)
+      }
+    });
+  }
+
+  /**
+   * @apiNote delete Post by id
+   * */
+  async deleteTip(contentID) {
+    const { user_id } = this.context.user;
+    if (!this.context.user) {
+      error({ badge: true, message: 'User not logged in' })
+      throw new Error('Error! User is not logged in');
+    }
+    await this.store.Tips.findOne({
+      where: {
+        contentID,
+        user_id
+      }
+    }).then(contentDetail => {
+      if (contentDetail) {
+        contentDetail.destroy();
+        success({ badge: true, message: 'deleteTips{} -> Tips delete success, Id:' + contentID })
+        return 'Tips delete success';
+      } else {
+        error({ badge: true, message: 'deleteTip{} -> Invalid content id :' + contentID })
+        throw new Error('Invalid content id :' + contentID)
+      }
+    });
+  }
+
+  /**
+   * @apiNote delete Post by id
+   * */
+  async deleteRecipe(contentID) {
+    const { user_id } = this.context.user;
+    if (!this.context.user) {
+      error({ badge: true, message: 'User not logged in' })
+      throw new Error('Error! User is not logged in');
+    }
+    await this.store.Recipe.findOne({
+      where: {
+        contentID,
+        user_id
+      }
+    }).then(contentDetail => {
+      if (contentDetail) {
+        contentDetail.destroy();
+        success({ badge: true, message: 'deleteRecipe{} -> Recipe delete success, Id:' + contentID })
+        return 'Recipe delete success';
+      } else {
+        error({ badge: true, message: 'deleteRecipe{} -> Invalid content id :' + contentID })
+        throw new Error('Invalid content id :' + contentID)
+      }
+    });
+  }
+
+  /**
+   * @ApiNode Get content by user id
+   * */
+  async getContentByUserId({ pageSize, after }) {
+
+    const { user_id } = this.context.user;
+    if (!this.context.user) {
+      error({ badge: true, message: 'User not logged in' })
+      throw new Error('Error! User is not logged in');
+    }
+    try {
+      const allContent = await this.store.ContentDetail.findAll({
+        where: { user_id },
+        order: [['createdAt', 'DESC']],
+      });
+      const slicedContent = allContent.slice(after, after + pageSize).map(data => data.dataValues)
+      let hasMore = false;
+
+      if (slicedContent.length + after < allContent.length) hasMore = true
+
+      const recipeIds = slicedContent.filter(data => data?.contentType === "recipe").map(data => data?.contentId)
+      const postIds = slicedContent.filter(data => data?.contentType === "post").map(data => data.contentId)
+      const tipsIds = slicedContent.filter(data => data?.contentType === "tips").map(data => data.contentId)
+
+      const recipes = await this.getRecipesByIds({ contentIds: recipeIds })
+      const posts = await this.getPostsByIds({ contentIds: postIds })
+      const tips = await this.getTipsByIds({ contentIds: tipsIds })
+
+      let content = recipes.concat(posts, tips);
+      content = await Promise.all(content.map(async (data) => {
+        const { id, ...vals } = data;
+        const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
+        return { id, ...vals, currentUserReacted }
+      }))
+
+      return { content, hasMore };
+    } catch (err) {
+      error({ badge: true, message: err.message })
+      throw new Error(err.message)
+    }
+  }
 }
 
 export default ContentAPI;
