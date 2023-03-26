@@ -8,7 +8,8 @@ export default gql`
         createPost(postInput: PostInput!): Post
         reactToContent(contentId: String!): messageResponse
         unReactToContent(contentId: String!): messageResponse
-        contentSaved(contentId: SaveContentInput!): messageResponse
+        contentSaved(contentSaveInput: SaveContentInput!): messageResponse
+        deleteContentById(contentID: String!): messageResponse
     }
 
     extend type Query {
@@ -17,6 +18,11 @@ export default gql`
         getPostById(id: String!): Post
         getTipsById(id: String!): Tips
         searchContentSaved(contentId: String):[SaveContent]
+    }
+
+    input DeleteContentInput {
+        contentId: String!
+        contentType: String!
     }
 
     input SaveContentInput {
