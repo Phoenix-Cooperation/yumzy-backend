@@ -6,26 +6,37 @@ export default {
   Query: {
     getContent: async (_, {pageSize = 20, after = 0 }, { user: { user_id }, dataSources }) => {
 
-      const cachedContent = await dataSources.RedisCache.getContentCache(user_id, pageSize, after)
-      // console.log(cachedContent)
-      if (cachedContent) {
-        console.log("returning content from cache")
-        return cachedContent;
-      }
+      // const cachedContent = await dataSources.RedisCache.getContentCache(user_id, pageSize, after)
+      // // console.log(cachedContent)
+      // if (cachedContent) {
+      //   console.log("returning content from cache")
+      //   return cachedContent;
+      // }
 
       try {
-        let { content, hasMore }= await dataSources.ContentAPI.getContent({ pageSize, after })
+        let { slicedContent, hasMore } = await dataSources.ContentAPI.getPaginatedContentDetail({ pageSize, after })
+        // console.log(slicedContent)
 
-        content = await Promise.all(content.map(async (data) => {
-          const { user: { user_id }, user, id,  ...val } = data
-          const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
+        let { content, notInCache } = await dataSources.RedisCache.getContentFromCache(slicedContent)
 
-          const commentCount = await dataSources.CommentAPI.getCommentCountForPost(id)
-          return {...val, id,  user: { ...user, photoURL }, commentCount }
-        }))
+        // console.log("notInCache", notInCache, "content", content)
+        if (notInCache.length > 0) {
+          let  notInCacheContent = await dataSources.ContentAPI.getContent(notInCache)
+          console.log(notInCacheContent)
 
-        dataSources.RedisCache.setContentCache(user_id, pageSize, after, { content, hasMore })
+          notInCacheContent = await Promise.all(notInCacheContent.map(async (data) => {
+            const { user: { user_id }, user, id,  ...val } = data
+            const photoURL = await dataSources.UserAPI.getUserPhotoURL(user_id);
+  
+            const commentCount = await dataSources.CommentAPI.getCommentCountForPost(id)
+            const temp = {...val, id,  user: { ...user, photoURL }, commentCount }
+            await dataSources.RedisCache.setContentToCache(temp)
+            return temp
+          }))
+          content = [...content, ...notInCacheContent]
 
+        }
+        content = [...content].sort(() => Math.random() - 0.5);
         return { content, hasMore }
       } catch (error) {
         throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})

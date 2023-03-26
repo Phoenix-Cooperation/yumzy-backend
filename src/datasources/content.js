@@ -207,20 +207,39 @@ class ContentAPI extends DataSource {
     return false;
   }
   
-
-  async getContent({pageSize, after}) {
+  async getPaginatedContentDetail({pageSize, after}) {
     try {
-
-      const { user_id } = this.context.user;
-
       const allContent = await this.store.ContentDetail.findAll({
         order: [['createdAt', 'DESC']],
-      })
+      }) 
+
       const slicedContent = allContent.slice(after, after + pageSize).map(data => data.dataValues)
       let hasMore = false;
 
       console.log(slicedContent.length + after, allContent.length)
+
       if (slicedContent.length + after < allContent.length) hasMore = true
+
+      return { slicedContent, hasMore }
+
+    } catch (err) {
+      error({ message: err.message, badge: true })
+    }
+  }
+
+  async getContent(slicedContent) {
+    try {
+
+      const { user_id } = this.context.user;
+
+      // const allContent = await this.store.ContentDetail.findAll({
+      //   order: [['createdAt', 'DESC']],
+      // })
+      // const slicedContent = allContent.slice(after, after + pageSize).map(data => data.dataValues)
+      // let hasMore = false;
+
+      // console.log(slicedContent.length + after, allContent.length)
+      // if (slicedContent.length + after < allContent.length) hasMore = true
 
       const recipeIds = slicedContent.filter(data => data?.contentType === "recipe").map(data => data?.contentId)
       const postIds = slicedContent.filter(data => data?.contentType === "post").map(data => data.contentId)
@@ -239,9 +258,9 @@ class ContentAPI extends DataSource {
         const currentUserReacted = await this.checkCurrentUserReacted(id, user_id)
         return { id, ...vals, currentUserReacted }
       }))
-      content = [...content].sort(() => Math.random() - 0.5);
+      // content = [...content].sort(() => Math.random() - 0.5);
 
-      return { content , hasMore };
+      return content
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
