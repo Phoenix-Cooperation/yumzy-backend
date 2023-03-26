@@ -120,5 +120,12 @@ export default {
                 throw new ErrorResponse({message: `Cannot save Content: ${error.message}`})
             }
         },
+        deleteContentById: async (_, {deleteContentInput}, {dataSources}) => {
+            try {
+                return await dataSources.ContentAPI.deleteContentById(deleteContentInput);
+            } catch (error) {
+                throw new ErrorResponse({message: `Cannot save Content: ${error.message}`})
+            }
+        },
     }
 }
