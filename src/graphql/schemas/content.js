@@ -36,7 +36,6 @@ export default gql`
         contentId: String!
         contentType: String!
         user_id: String!
-        tags: String!
     }
 
     type messageResponse {

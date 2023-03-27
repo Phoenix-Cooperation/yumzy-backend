@@ -1,6 +1,6 @@
-import { DataSource } from "apollo-datasource";
+import {DataSource} from "apollo-datasource";
 import console from 'consola';
-import { Op } from "sequelize";
+import {Op} from "sequelize";
 
 const { success, error } = console;
 
@@ -574,10 +574,13 @@ class ContentAPI extends DataSource {
       } else {
         query = { where: { user_id }, order: [['createdAt', 'DESC']] };
       }
-      const {dataValue: searchContentSaved}  = await this.store
+      const rows = await this.store
         .SavedContent
         .findAll(query)
-      return searchContentSaved;
+      return rows.map((row) => {
+        const {id, contentId, contentType, user_id} = row.dataValues;
+        return row.dataValues;
+      });
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
