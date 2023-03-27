@@ -101,6 +101,12 @@ export const createStore = () => {
     })
 
     const ContentDetail = db.define('contentDetail', ContentDetailModel)
+    User.hasMany(ContentDetail, {
+        foreignKey: 'user_id'
+    })
+    ContentDetail.belongsTo(User, {
+        foreignKey: 'user_id'
+    })
 
     const ContentReact = db.define('contentReact',
         ContentReactModel,
