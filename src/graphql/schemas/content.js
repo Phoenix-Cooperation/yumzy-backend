@@ -9,12 +9,12 @@ export default gql`
         reactToContent(contentId: String!): messageResponse
         unReactToContent(contentId: String!): messageResponse
         contentSaved(contentSaveInput: SaveContentInput!): messageResponse
-        deleteContentById(contentID: String!): messageResponse
+        deleteContentById(contentId: String!): messageResponse
     }
 
     extend type Query {
         getContent(pageSize: Int!, after: Int): getContentResponse
-        getContentUserId: getContentResponse
+        getContentUserId(pageSize: Int!, after: Int): getContentResponse
         getRecipeById(id: String!): Recipe
         getPostById(id: String!): Post
         getTipsById(id: String!): Tips
