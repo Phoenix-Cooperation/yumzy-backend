@@ -107,6 +107,12 @@ export default {
         throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})
       }
     },
+    checkUserSavedCurrentContent: async(_,{ contentId }, { dataSources }) => {
+      console.log(contentId)
+      const res = await dataSources.ContentAPI.checkUserSavedCurrentContent(contentId)
+      console.log(res)
+      return { message: res }
+    }
   },
   Mutation: {
     createRecipe: async (_, { recipeInput }, { dataSources }) => {

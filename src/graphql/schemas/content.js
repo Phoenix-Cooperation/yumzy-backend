@@ -19,6 +19,7 @@ export default gql`
         getPostById(id: String!): Post
         getTipsById(id: String!): Tips
         searchContentSaved(contentId: String):[SaveContent]
+        checkUserSavedCurrentContent(contentId: String): checkResponse
     }
 
     input DeleteContentInput {
@@ -44,6 +45,10 @@ export default gql`
     type getContentResponse {
         content: [Content!]
         hasMore: Boolean
+    }
+
+    type checkResponse {
+        message: Boolean
     }
 
     type Content {
