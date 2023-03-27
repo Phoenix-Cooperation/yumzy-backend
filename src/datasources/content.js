@@ -570,14 +570,14 @@ class ContentAPI extends DataSource {
     try {
       let query;
       if (contentId) {
-        query = { where: { contentId: contentId, user_id: user_id }, order: [['createdAt', 'DESC']] };
+        query = { where: {contentId, user_id }, order: [['createdAt', 'DESC']] };
       } else {
-        query = { where: { user_id: user_id }, order: [['createdAt', 'DESC']] };
+        query = { where: { user_id }, order: [['createdAt', 'DESC']] };
       }
-      const { dataValues: savedContents } = await this.store
+      const {dataValue: searchContentSaved}  = await this.store
         .SavedContent
         .findAll(query)
-      return savedContents;
+      return searchContentSaved;
     } catch (err) {
       error({ badge: true, message: err.message })
       throw new Error(err.message)
