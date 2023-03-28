@@ -15,7 +15,7 @@ export default gql`
 
     extend type Query {
         getContent(pageSize: Int!, after: Int): getContentResponse
-        getContentUserId: getContentResponse
+        getContentUserId(pageSize: Int!, after: Int): getContentResponse
         getRecipeById(id: String!): Recipe
         getPostById(id: String!): Post
         getTipsById(id: String!): Tips
