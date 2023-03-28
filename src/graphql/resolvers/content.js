@@ -107,6 +107,12 @@ export default {
         throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})
       }
     },
+    checkUserSavedContent: async(_,{ contentId }, { dataSources }) => {
+      console.log(contentId)
+      const res = await dataSources.ContentAPI.checkUserSavedContent(contentId)
+      console.log(res)
+      return { message: res }
+    }
   },
   Mutation: {
     createRecipe: async (_, { recipeInput }, { dataSources }) => {
@@ -172,7 +178,10 @@ export default {
         throw new ErrorResponse({ message: `Cannot save content: ${error.message}`})
       }
     },
-    deleteContentById: async (_, { contentId }, { dataSources }) => {
+    contentUnsaved: async (_, { contentSaveInput }, { dataSources }) => {
+      return await dataSources.ContentAPI.contentUnsaved(contentSaveInput);
+    },
+    deleteContentById: async (_, { contentID }, { dataSources }) => {
       try {
         return await dataSources.ContentAPI.deleteContentById(contentId);
       } catch (error) {

@@ -8,8 +8,9 @@ export default gql`
         createPost(postInput: PostInput!): Post
         reactToContent(contentId: String!): messageResponse
         unReactToContent(contentId: String!): messageResponse
-        contentSaved(contentSaveInput: SaveContentInput!): messageResponse
-        deleteContentById(contentId: String!): messageResponse
+        contentSaved(contentSaveInput: SaveContentInput!): BoolResponse
+        contentUnsaved(contentSaveInput: SaveContentInput!): BoolResponse
+        deleteContentById(contentID: String!): messageResponse
     }
 
     extend type Query {
@@ -18,7 +19,8 @@ export default gql`
         getRecipeById(id: String!): Recipe
         getPostById(id: String!): Post
         getTipsById(id: String!): Tips
-        searchContentSaved(contentId: String):[SaveContent]
+        searchContentSaved(contentId: String):[Content]
+        checkUserSavedContent(contentId: String): BoolResponse
     }
 
     input DeleteContentInput {
@@ -44,6 +46,10 @@ export default gql`
     type getContentResponse {
         content: [Content!]
         hasMore: Boolean
+    }
+
+    type BoolResponse {
+        message: Boolean
     }
 
     type Content {

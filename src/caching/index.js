@@ -12,14 +12,18 @@ const { error } = console;
 // })
 
 class RedisCache extends DataSource {
+    redis;
     constructor() {
         super()
-        this.redis = new Redis({
-            host: process.env.REDIS_HOST,
-            port: process.env.REDIS_PORT,
-            username: process.env.REDIS_USERNAME,
-            password: process.env.REDIS_PASSWORD,
-        })
+        if (this.redis === undefined) {
+            this.redis = new Redis({
+                host: process.env.REDIS_HOST,
+                port: process.env.REDIS_PORT,
+                username: process.env.REDIS_USERNAME,
+                password: process.env.REDIS_PASSWORD,
+                idleTimeout: 10000
+            })
+        }
     }
 
     initialize(config) {
