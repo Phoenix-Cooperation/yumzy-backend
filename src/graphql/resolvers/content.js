@@ -91,9 +91,9 @@ export default {
     searchContentSaved: async (_, { contentId }, { dataSources }) => {
       return await dataSources.ContentAPI.searchContentSaved(contentId);
     },
-    getContentUserId: async (_, {}, { user: { user_id }, dataSources }) => {
+    getContentUserId: async (_, { pageSize = 20, after = 0 }, { user: { user_id }, dataSources }) => {
       try {
-        let { content, hasMore }= await dataSources.ContentAPI.getContentByUserId();
+        let { content, hasMore }= await dataSources.ContentAPI.getContentByUserId({ pageSize, after});
 
         content = await Promise.all(content.map(async (data) => {
           const { user: { user_id }, user, id,  ...val } = data
@@ -172,9 +172,9 @@ export default {
         throw new ErrorResponse({ message: `Cannot save content: ${error.message}`})
       }
     },
-    deleteContentById: async (_, { contentID }, { dataSources }) => {
+    deleteContentById: async (_, { contentId }, { dataSources }) => {
       try {
-        return await dataSources.ContentAPI.deleteContentById(contentID);
+        return await dataSources.ContentAPI.deleteContentById(contentId);
       } catch (error) {
         throw new ErrorResponse({ message: `Cannot save content: ${error.message}`})
       }
