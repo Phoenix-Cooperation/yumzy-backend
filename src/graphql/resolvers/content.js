@@ -107,9 +107,9 @@ export default {
         throw new ErrorResponse({ message: `Cannot get content: ${error.message}`})
       }
     },
-    checkUserSavedCurrentContent: async(_,{ contentId }, { dataSources }) => {
+    checkUserSavedContent: async(_,{ contentId }, { dataSources }) => {
       console.log(contentId)
-      const res = await dataSources.ContentAPI.checkUserSavedCurrentContent(contentId)
+      const res = await dataSources.ContentAPI.checkUserSavedContent(contentId)
       console.log(res)
       return { message: res }
     }
@@ -177,6 +177,9 @@ export default {
       } catch (error) {
         throw new ErrorResponse({ message: `Cannot save content: ${error.message}`})
       }
+    },
+    contentUnsaved: async (_, { contentSaveInput }, { dataSources }) => {
+      return await dataSources.ContentAPI.contentUnsaved(contentSaveInput);
     },
     deleteContentById: async (_, { contentID }, { dataSources }) => {
       try {

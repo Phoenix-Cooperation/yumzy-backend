@@ -540,7 +540,7 @@ class ContentAPI extends DataSource {
         const { dataValues: { id } } = savedResponse;
 
         success({ badge: true, message: "Content Saved!" })
-        return { message: 'Content save success, id: ' + id };
+        return { message: true };
       } catch (err) {
         error({ badge: true, message: err.message })
         throw new Error(err.message)
@@ -548,6 +548,36 @@ class ContentAPI extends DataSource {
     } else {
       error({ badge: true, message: 'contentSaved{} -> Already saved' })
       return 'Already saved';
+    }
+  }
+
+  async contentUnsaved(saveData) {
+    const { user_id } = this.context.user;
+    if (!this.context.user) {
+      error({ badge: true, message: 'User not logged in' })
+      throw new Error('Error! User is not logged in');
+    }
+    const isSaved = await this.checkUserSavedContent(saveData.contentId);
+    console.log(isSaved)
+    if (isSaved) {
+      try {
+        const { contentId } = saveData
+        await this.store.SavedContent.destroy({
+          where: {
+            contentId,
+            user_id,
+          }
+        })
+
+        success({ badge: true, message: "Content UnSaved!" })
+        return { message: true };
+      } catch (err) {
+        error({ badge: true, message: err.message })
+        throw new Error(err.message)
+      }
+    } else {
+      error({ badge: true, message: 'contentSaved{} -> Already saved' })
+      return { message: false }
     }
   }
 
@@ -740,7 +770,7 @@ class ContentAPI extends DataSource {
     }
   }
 
-  async checkUserSavedCurrentContent(contentId) {
+  async checkUserSavedContent(contentId) {
     if (!this.context.user) {
       error({ badge: true, message: 'User not logged in' })
       throw new Error('Error! User is not logged in');
@@ -756,11 +786,10 @@ class ContentAPI extends DataSource {
         }
       })
 
-      if (res === null) return false
-      else return true
+      return !!res;
     } catch (err) {
       error({ message:`check User Saved Current content ${err.message}`, badge: true })
-      throw new Error(err.message)
+      throw new Error(err.messagegetContentUserId)
     }
   }
 }
