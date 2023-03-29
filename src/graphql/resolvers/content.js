@@ -183,13 +183,11 @@ export default {
     },
     deleteContentById: async (_, { contentId }, { dataSources }) => {
       console.log("deleteContent resolver", contentId)
-      try {
-        const res = await dataSources.ContentAPI.deleteContentById(contentId);
-        console.log(res)
-        return { message: "success" }
-      } catch (error) {
-        throw new ErrorResponse({ message: `Cannot delete content: ${error.message}`})
-      }
+      await dataSources.RedisCache.deleteSingleContentFromCache(contentId)
+      const res = await dataSources.ContentAPI.deleteContentById(contentId);
+      console.log(res)
+      return { message: "success" }
+      
     }
   }
 }
