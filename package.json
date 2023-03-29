@@ -20,6 +20,7 @@
     "express": "^4.17.2",
     "firebase": "^9.10.0",
     "firebase-admin": "^10.0.1",
+    "generic-pool": "^3.9.0",
     "graphql": "^15.8.0",
     "graphql-upload": "^13.0.0",
     "ioredis": "^5.3.1",

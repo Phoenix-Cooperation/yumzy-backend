@@ -4,6 +4,7 @@ export default {
   Query: {
     getContent: async (_, { pageSize = 20, after = 0 }, { user: { user_id }, dataSources }) => {
 
+
       // const cachedContent = await dataSources.RedisCache.getContentCache(user_id, pageSize, after)
       // // console.log(cachedContent)
       // if (cachedContent) {
