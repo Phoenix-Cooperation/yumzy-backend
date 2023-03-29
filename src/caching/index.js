@@ -82,31 +82,15 @@ class RedisCache extends DataSource {
         }
     }
 
-    // async setContentCache(userId, pageSize, after, response) {
-    //     const key = this.generateKeyUserContent(userId, pageSize, after)
-
-    //     try {
-    //         await this.redis.set(key, JSON.stringify(response), 'EX', '60')
-    //     } catch (err) {
-    //         error({ message: err.message, badge: true })
-    //         return 
-    //     }
-    // }
-
-    // async getContentCache(userId, pageSize, after) {
-    //     const key = this.generateKeyUserContent(userId, pageSize, after)
-    //     console.log('get content')
-    //     try {
-    //         if (this.checkCache(key)) {
-    //             const res = await this.redis.get(key)
-    //             return JSON.parse(res)
-    //         }
-    //         return null
-    //     } catch (err) {
-    //         error({ message: err.message, badge: true })
-    //         return null
-    //     }
-    // }
+    async deleteSingleContentFromCache(id) {
+        try {
+            console.log("deleting content from cache")
+            await this.redis.del(id)
+        } catch (err) {
+            error({ message: err.message, badge: true })
+            throw new Error(`delete from cache error: ${err.message}`)
+        }
+    }
 }
 
 export default RedisCache;
