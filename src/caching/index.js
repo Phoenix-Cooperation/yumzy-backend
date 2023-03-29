@@ -45,7 +45,7 @@ export class RedisCache extends DataSource {
             max: 8,
             min: 1,
             acquireTimeoutMillis: 10000,
-            idleTimeoutMillis: 3000
+            idleTimeoutMillis: 500
         })
     }
 
