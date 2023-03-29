@@ -10,7 +10,7 @@ export default gql`
         unReactToContent(contentId: String!): messageResponse
         contentSaved(contentSaveInput: SaveContentInput!): BoolResponse
         contentUnsaved(contentSaveInput: SaveContentInput!): BoolResponse
-        deleteContentById(contentID: String!): messageResponse
+        deleteContentById(contentId: String!): messageResponse
     }
 
     extend type Query {

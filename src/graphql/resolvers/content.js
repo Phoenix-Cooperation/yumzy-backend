@@ -181,11 +181,14 @@ export default {
     contentUnsaved: async (_, { contentSaveInput }, { dataSources }) => {
       return await dataSources.ContentAPI.contentUnsaved(contentSaveInput);
     },
-    deleteContentById: async (_, { contentID }, { dataSources }) => {
+    deleteContentById: async (_, { contentId }, { dataSources }) => {
+      console.log("deleteContent resolver", contentId)
       try {
-        return await dataSources.ContentAPI.deleteContentById(contentId);
+        const res = await dataSources.ContentAPI.deleteContentById(contentId);
+        console.log(res)
+        return { message: "success" }
       } catch (error) {
-        throw new ErrorResponse({ message: `Cannot save content: ${error.message}`})
+        throw new ErrorResponse({ message: `Cannot delete content: ${error.message}`})
       }
     }
   }

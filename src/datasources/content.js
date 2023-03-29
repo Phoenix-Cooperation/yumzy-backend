@@ -615,15 +615,17 @@ class ContentAPI extends DataSource {
    * @apiNote: deleteContentByContentIDAndUserID
    * @param contentID
    * */
-  async deleteContentById(contentID) {
+  async deleteContentById(contentId) {
+    console.log("data source id", contentId)
     const { user_id } = this.context.user;
     if (!this.context.user) {
       error({ badge: true, message: 'User not logged in' })
       throw new Error('Error! User is not logged in');
     }
+
     await this.store.ContentDetail.findOne({
       where: {
-        contentID,
+        contentId,
         user_id
       }
     }).then(async contentDetail => {
@@ -637,11 +639,11 @@ class ContentAPI extends DataSource {
           await this.deleteTip(contentId);
         }
         await contentDetail.destroy();
-        success({ badge: true, message: 'deleteContentById{} -> Content delete success, Id:' + contentID })
-        return 'Content delete success';
+        success({ badge: true, message: 'deleteContentById{} -> Content delete success, Id:' + contentId })
+        return { message: "success"};
       } else {
-        error({ badge: true, message: 'deleteContentById{} -> Invalid content id :' + contentID })
-        throw new Error('Invalid content id :' + contentID)
+        error({ badge: true, message: 'deleteContentById{} -> Invalid content id :' + contentId })
+        throw new Error('Invalid content id :' + contentId)
       }
     });
   }
@@ -649,7 +651,7 @@ class ContentAPI extends DataSource {
   /**
    * @apiNote delete Post by id
    * */
-  async deletePost(contentID) {
+  async deletePost(contentId) {
     const { user_id } = this.context.user;
     if (!this.context.user) {
       error({ badge: true, message: 'User not logged in' })
@@ -657,17 +659,17 @@ class ContentAPI extends DataSource {
     }
     await this.store.Post.findOne({
       where: {
-        contentID,
+        id: contentId,
         user_id
       }
     }).then(contentDetail => {
       if (contentDetail) {
         contentDetail.destroy();
-        success({ badge: true, message: 'deletePost{} -> Post delete success, Id:' + contentID })
+        success({ badge: true, message: 'deletePost{} -> Post delete success, Id:' + contentId })
         return 'Post delete success';
       } else {
-        error({ badge: true, message: 'deletePost{} -> Invalid content id :' + contentID })
-        throw new Error('Invalid content id :' + contentID)
+        error({ badge: true, message: 'deletePost{} -> Invalid content id :' + contentId })
+        throw new Error('Invalid content id :' + contentId)
       }
     });
   }
@@ -675,7 +677,7 @@ class ContentAPI extends DataSource {
   /**
    * @apiNote delete Post by id
    * */
-  async deleteTip(contentID) {
+  async deleteTip(contentId) {
     const { user_id } = this.context.user;
     if (!this.context.user) {
       error({ badge: true, message: 'User not logged in' })
@@ -683,17 +685,17 @@ class ContentAPI extends DataSource {
     }
     await this.store.Tips.findOne({
       where: {
-        contentID,
+        id: contentId,
         user_id
       }
     }).then(contentDetail => {
       if (contentDetail) {
         contentDetail.destroy();
-        success({ badge: true, message: 'deleteTips{} -> Tips delete success, Id:' + contentID })
+        success({ badge: true, message: 'deleteTips{} -> Tips delete success, Id:' + contentId })
         return 'Tips delete success';
       } else {
-        error({ badge: true, message: 'deleteTip{} -> Invalid content id :' + contentID })
-        throw new Error('Invalid content id :' + contentID)
+        error({ badge: true, message: 'deleteTip{} -> Invalid content id :' + contentId })
+        throw new Error('Invalid content id :' + contentId)
       }
     });
   }
@@ -701,7 +703,7 @@ class ContentAPI extends DataSource {
   /**
    * @apiNote delete Post by id
    * */
-  async deleteRecipe(contentID) {
+  async deleteRecipe(contentId) {
     const { user_id } = this.context.user;
     if (!this.context.user) {
       error({ badge: true, message: 'User not logged in' })
@@ -709,17 +711,17 @@ class ContentAPI extends DataSource {
     }
     await this.store.Recipe.findOne({
       where: {
-        contentID,
+        id: contentId,
         user_id
       }
     }).then(contentDetail => {
       if (contentDetail) {
         contentDetail.destroy();
-        success({ badge: true, message: 'deleteRecipe{} -> Recipe delete success, Id:' + contentID })
+        success({ badge: true, message: 'deleteRecipe{} -> Recipe delete success, Id:' + contentId })
         return 'Recipe delete success';
       } else {
-        error({ badge: true, message: 'deleteRecipe{} -> Invalid content id :' + contentID })
-        throw new Error('Invalid content id :' + contentID)
+        error({ badge: true, message: 'deleteRecipe{} -> Invalid content id :' + contentId })
+        throw new Error('Invalid content id :' + contentId)
       }
     });
   }
